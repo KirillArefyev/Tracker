@@ -11,7 +11,6 @@
 		ED3AB9B02BC3056400E05D6D /* TrackersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED3AB9AF2BC3056400E05D6D /* TrackersViewController.swift */; };
 		ED3AB9B22BC3059D00E05D6D /* StatisticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED3AB9B12BC3059D00E05D6D /* StatisticViewController.swift */; };
 		ED4E7E812BC17104007FF954 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4E7E802BC17104007FF954 /* AppDelegate.swift */; };
-		ED4E7E832BC17104007FF954 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4E7E822BC17104007FF954 /* SceneDelegate.swift */; };
 		ED4E7E852BC17104007FF954 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4E7E842BC17104007FF954 /* TabBarViewController.swift */; };
 		ED4E7E8A2BC17105007FF954 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ED4E7E892BC17105007FF954 /* Assets.xcassets */; };
 		ED4E7E8D2BC17105007FF954 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = ED4E7E8C2BC17105007FF954 /* Base */; };
@@ -33,7 +32,6 @@
 		ED3AB9B12BC3059D00E05D6D /* StatisticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticViewController.swift; sourceTree = "<group>"; };
 		ED4E7E7D2BC17104007FF954 /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED4E7E802BC17104007FF954 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		ED4E7E822BC17104007FF954 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		ED4E7E842BC17104007FF954 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		ED4E7E892BC17105007FF954 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		ED4E7E8C2BC17105007FF954 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -104,7 +102,6 @@
 				ED8773A62BCC129D0019D8A9 /* Presentation */,
 				ED3AB9AB2BC2EA5300E05D6D /* Resources */,
 				ED4E7E802BC17104007FF954 /* AppDelegate.swift */,
-				ED4E7E822BC17104007FF954 /* SceneDelegate.swift */,
 			);
 			path = Tracker;
 			sourceTree = "<group>";
@@ -215,7 +212,6 @@
 				ED3AB9B22BC3059D00E05D6D /* StatisticViewController.swift in Sources */,
 				ED87739E2BC99A170019D8A9 /* Date+Extension.swift in Sources */,
 				ED55A2A82BC861A300FF9A43 /* TrackerRecord.swift in Sources */,
-				ED4E7E832BC17104007FF954 /* SceneDelegate.swift in Sources */,
 				ED3AB9AE2BC2EB9200E05D6D /* UIColor+Extension.swift in Sources */,
 				ED8773CC2BCDB7AD0019D8A9 /* HeaderTrackersCollectionView.swift in Sources */,
 				ED8773A82BCC3BF60019D8A9 /* TrackerSchedule.swift in Sources */,
