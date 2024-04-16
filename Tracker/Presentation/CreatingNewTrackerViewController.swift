@@ -54,9 +54,9 @@ final class CreatingNewTrackerViewController: UIViewController {
     
     private lazy var categoryAndScheduleTable: UITableView = {
         let tableView = UITableView()
-//        tableView.dataSource = self
-//        tableView.delegate = self
-//        tableView.register(CreatingNewTrackerViewController.self, forCellReuseIdentifier: "cell")
+        //        tableView.dataSource = self
+        //        tableView.delegate = self
+        //        tableView.register(CreatingNewTrackerViewController.self, forCellReuseIdentifier: "cell")
         return tableView
     }()
     
@@ -68,7 +68,30 @@ final class CreatingNewTrackerViewController: UIViewController {
         return stackView
     }()
     
+    private lazy var cancelButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Отменить", for: .normal)
+        button.setTitleColor(.trRed, for: .normal)
+        button.layer.borderColor = UIColor.trRed.cgColor
+        button.layer.borderWidth = 1
+        button.addTarget(self, action: #selector(didTapToCancelButton), for: .touchUpInside)
+        return button
+    }()
     
+    private lazy var createButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Создать", for: .normal)
+        button.addTarget(self, action: #selector(didTapToCreateButton), for: .touchUpInside)
+        return button
+    }()
+    
+    private lazy var buttonStack: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.distribution = .fillEqually
+        stackView.spacing = 8.0
+        return stackView
+    }()
     
     init(typeTracker: TypeTracker?) {
         self.typeTracker = typeTracker
@@ -87,40 +110,55 @@ final class CreatingNewTrackerViewController: UIViewController {
     }
     
     private func addSubviews() {
-        [textLabel, textFieldAndTableViewStack].forEach { view.addSubview($0) }
+        [textLabel,
+         textFieldAndTableViewStack,
+         buttonStack].forEach { view.addSubview($0) }
         
-        [inputTrackerNameField, categoryAndScheduleTable].forEach {
+        [inputTrackerNameField,
+         categoryAndScheduleTable].forEach {
             $0.backgroundColor = .trBackground
             $0.layer.cornerRadius = 16
             $0.layer.masksToBounds = true
             
             textFieldAndTableViewStack.addArrangedSubview($0)
         }
+        
+        [cancelButton, createButton].forEach {
+            $0.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+            $0.layer.cornerRadius = 16
+            $0.layer.masksToBounds = true
+            
+            buttonStack.addArrangedSubview($0)
+        }
     }
     
     private func applyConstraints() {
         switch typeTracker {
         case .habit:
-            self.heightTable = 75
-        case .irregularEvent:
             self.heightTable = 150
+        case .irregularEvent:
+            self.heightTable = 75
         case nil:
             break
         }
         
-        [textLabel, inputTrackerNameField, categoryAndScheduleTable, textFieldAndTableViewStack].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+        [textLabel, inputTrackerNameField, categoryAndScheduleTable, textFieldAndTableViewStack, cancelButton, createButton, buttonStack].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         
         NSLayoutConstraint.activate([
             textLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            textLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
+            textLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
             
             textFieldAndTableViewStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant:  16),
             textFieldAndTableViewStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            textFieldAndTableViewStack.topAnchor.constraint(equalTo: textLabel.bottomAnchor, constant: 42),
+            textFieldAndTableViewStack.topAnchor.constraint(equalTo: textLabel.bottomAnchor, constant: 38),
             
             inputTrackerNameField.heightAnchor.constraint(equalToConstant: 75),
             
-            categoryAndScheduleTable.heightAnchor.constraint(equalToConstant: heightTable)
+            categoryAndScheduleTable.heightAnchor.constraint(equalToConstant: heightTable),
+            
+            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            buttonStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
         ])
         
         [inputTrackerNameField, categoryAndScheduleTable].forEach {
@@ -129,6 +167,20 @@ final class CreatingNewTrackerViewController: UIViewController {
                 $0.trailingAnchor.constraint(equalTo: textFieldAndTableViewStack.trailingAnchor)
             ])
         }
+        
+        [cancelButton, createButton].forEach {
+            NSLayoutConstraint.activate([
+                $0.heightAnchor.constraint(equalToConstant: 60)
+            ])
+        }
+    }
+    
+    @objc private func didTapToCancelButton() {
+        print("Отменить")
+    }
+    
+    @objc private func didTapToCreateButton() {
+        print("Создать")
     }
 }
 //// MARK: - Extesions

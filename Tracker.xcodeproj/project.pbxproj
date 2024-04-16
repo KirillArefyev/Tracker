@@ -23,6 +23,8 @@
 		ED8773A22BCAD91A0019D8A9 /* SelectingNewTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8773A12BCAD91A0019D8A9 /* SelectingNewTrackerViewController.swift */; };
 		ED8773A42BCC11C70019D8A9 /* TypeTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8773A32BCC11C70019D8A9 /* TypeTracker.swift */; };
 		ED8773A82BCC3BF60019D8A9 /* TrackerSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8773A72BCC3BF60019D8A9 /* TrackerSchedule.swift */; };
+		ED8773CA2BCDAE310019D8A9 /* TrackersCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8773C92BCDAE310019D8A9 /* TrackersCollectionViewCell.swift */; };
+		ED8773CC2BCDB7AD0019D8A9 /* HeaderTrackersCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8773CB2BCDB7AD0019D8A9 /* HeaderTrackersCollectionView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +46,8 @@
 		ED8773A12BCAD91A0019D8A9 /* SelectingNewTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectingNewTrackerViewController.swift; sourceTree = "<group>"; };
 		ED8773A32BCC11C70019D8A9 /* TypeTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeTracker.swift; sourceTree = "<group>"; };
 		ED8773A72BCC3BF60019D8A9 /* TrackerSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerSchedule.swift; sourceTree = "<group>"; };
+		ED8773C92BCDAE310019D8A9 /* TrackersCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersCollectionViewCell.swift; sourceTree = "<group>"; };
+		ED8773CB2BCDB7AD0019D8A9 /* HeaderTrackersCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderTrackersCollectionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +129,8 @@
 				ED3AB9AF2BC3056400E05D6D /* TrackersViewController.swift */,
 				ED8773A12BCAD91A0019D8A9 /* SelectingNewTrackerViewController.swift */,
 				ED3AB9B12BC3059D00E05D6D /* StatisticViewController.swift */,
+				ED8773C92BCDAE310019D8A9 /* TrackersCollectionViewCell.swift */,
+				ED8773CB2BCDB7AD0019D8A9 /* HeaderTrackersCollectionView.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -202,6 +208,7 @@
 				ED4E7E852BC17104007FF954 /* TabBarViewController.swift in Sources */,
 				ED4E7E812BC17104007FF954 /* AppDelegate.swift in Sources */,
 				ED8773A02BCAD31F0019D8A9 /* CreatingNewTrackerViewController.swift in Sources */,
+				ED8773CA2BCDAE310019D8A9 /* TrackersCollectionViewCell.swift in Sources */,
 				ED55A2A62BC8617E00FF9A43 /* TrackerCategory.swift in Sources */,
 				ED3AB9B02BC3056400E05D6D /* TrackersViewController.swift in Sources */,
 				ED8773A22BCAD91A0019D8A9 /* SelectingNewTrackerViewController.swift in Sources */,
@@ -210,6 +217,7 @@
 				ED55A2A82BC861A300FF9A43 /* TrackerRecord.swift in Sources */,
 				ED4E7E832BC17104007FF954 /* SceneDelegate.swift in Sources */,
 				ED3AB9AE2BC2EB9200E05D6D /* UIColor+Extension.swift in Sources */,
+				ED8773CC2BCDB7AD0019D8A9 /* HeaderTrackersCollectionView.swift in Sources */,
 				ED8773A82BCC3BF60019D8A9 /* TrackerSchedule.swift in Sources */,
 				ED55A2A42BC8616100FF9A43 /* Tracker.swift in Sources */,
 				ED8773A42BCC11C70019D8A9 /* TypeTracker.swift in Sources */,

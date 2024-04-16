@@ -66,7 +66,7 @@ final class SelectingNewTrackerViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             textLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            textLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
+            textLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
             
             buttonsStack.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             buttonsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
