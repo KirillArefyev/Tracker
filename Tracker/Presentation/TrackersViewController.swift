@@ -8,11 +8,11 @@
 import UIKit
 
 final class TrackersViewController: UIViewController {
-    // MARK: - Public Properties
-    var categories: [TrackerCategory]?
-    var completedTrakers: [TrackerRecord]?
-    var currentDate = Date()
     // MARK: - Private Properties
+    private var categories: [TrackerCategory]?
+    private var completedTrakers: [TrackerRecord]?
+    private var currentDate = Date()
+    
     private lazy var noTrackersImage: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "Star")
@@ -113,7 +113,6 @@ final class TrackersViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
