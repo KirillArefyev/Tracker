@@ -11,7 +11,7 @@ final class CreatingNewTrackerViewController: UIViewController {
     weak var delegate: SelectingNewTrackerViewController?
     // MARK: - Private Properties
     private var typeTracker: TypeTracker?
-    private var selectedCategory: String?
+    private var selectedCategory: String? = "Важное"
     private var trackerSchedule: Set<String> = []
     
     private let emojis: [String] = [
@@ -55,10 +55,7 @@ final class CreatingNewTrackerViewController: UIViewController {
         tableView.dataSource = self
         tableView.backgroundColor = .trBackground
         tableView.layer.cornerRadius = 16
-        tableView.layer.maskedCorners = [.layerMinXMinYCorner,
-                                         .layerMinXMaxYCorner,
-                                         .layerMaxXMinYCorner,
-                                         .layerMaxXMaxYCorner]
+        tableView.layer.masksToBounds = true
         tableView.separatorInset =  UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         tableView.separatorColor = .trGray
         tableView.isScrollEnabled = false
@@ -202,6 +199,7 @@ extension CreatingNewTrackerViewController: UITableViewDataSource {
         cell.textLabel?.text = typeTracker.cellName[indexPath.row]
         cell.detailTextLabel?.textColor = .trGray
         cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        cell.selectionStyle = .none
         switch indexPath.row {
         case 0:
             cell.detailTextLabel?.text = selectedCategory
@@ -239,4 +237,7 @@ extension CreatingNewTrackerViewController: UITableViewDelegate {
             break
         }
     }
+}
+
+extension CreatingNewTrackerViewController: UITextFieldDelegate {
 }

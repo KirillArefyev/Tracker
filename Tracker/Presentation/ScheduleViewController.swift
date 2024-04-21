@@ -25,13 +25,11 @@ final class ScheduleViewController: UIViewController {
         tableView.dataSource = self
         tableView.backgroundColor = .trBackground
         tableView.layer.cornerRadius = 16
-        tableView.layer.maskedCorners = [.layerMinXMinYCorner,
-                                         .layerMinXMaxYCorner,
-                                         .layerMaxXMinYCorner,
-                                         .layerMaxXMaxYCorner]
+        tableView.layer.masksToBounds = true
         tableView.separatorInset =  UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         tableView.separatorColor = .trGray
         tableView.isScrollEnabled = false
+        tableView.allowsSelection = false
         return tableView
     }()
     
@@ -39,6 +37,8 @@ final class ScheduleViewController: UIViewController {
         let button = UIButton()
         button.backgroundColor = .trBlack
         button.setTitle("Готово", for: .normal)
+        button.layer.cornerRadius = 16
+        button.layer.masksToBounds = true
         button.addTarget(self, action: #selector(didTapReadyButton), for: .touchUpInside)
         return button
     }()
@@ -91,13 +91,30 @@ final class ScheduleViewController: UIViewController {
 // MARK: - Extension: TableViewDataSource
 extension ScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 7
+        return WeekDay.allCases.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
         cell.backgroundColor = .clear
+        cell.selectionStyle = .none
+        let day = WeekDay.allCases[indexPath.row].dayOfWeek
+        cell.textLabel?.text = day
+        cell.textLabel?.textColor = .trBlack
+        cell.textLabel?.font = .systemFont(ofSize: 17, weight: .regular)
+        
+        let switchView = UISwitch()
+        switchView.addTarget(self, action: #selector(switchToggled), for: .valueChanged)
+        cell.accessoryView = switchView
+        
+        if indexPath.row == WeekDay.allCases.count - 1 {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+        }
         return cell
+    }
+    
+    @objc func switchToggled(_ sender: UISwitch) {
+        
     }
 }
 // MARK: - Extension: TableViewDelegate

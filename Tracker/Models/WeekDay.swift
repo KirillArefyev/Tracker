@@ -1,5 +1,5 @@
 //
-//  TrackerSchedule.swift
+//  WeekDay.swift
 //  Tracker
 //
 //  Created by Кирилл Арефьев on 14.04.2024.
@@ -7,14 +7,8 @@
 
 import Foundation
 
-enum TrackerSchedule {
-    case monday
-    case tuesday
-    case wednesday
-    case thursday
-    case friday
-    case saturday
-    case sunday
+enum WeekDay: CaseIterable {
+    case monday, tuesday, wednesday, thursday, friday, saturday, sunday
     
     var dayOfWeek: String {
         switch self {
@@ -35,7 +29,7 @@ enum TrackerSchedule {
         }
     }
     
-    var scheduleDetail: String {
+    var shortName: String {
         switch self {
         case .monday:
             return "Пн"
@@ -52,9 +46,5 @@ enum TrackerSchedule {
         case .sunday:
             return "Вс"
         }
-    }
-    
-    func appendValueToTrackerSchedule() {
-        
     }
 }
