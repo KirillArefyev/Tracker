@@ -8,13 +8,11 @@
 import UIKit
 
 final class CreatingNewTrackerViewController: UIViewController {
-    
     weak var delegate: SelectingNewTrackerViewController?
-    
-    private let typeTracker: TypeTracker?
-    
-    let trackerCategory: [String]? = nil
-    var trackerSchedule: [String] = []
+    // MARK: - Private Properties
+    private var typeTracker: TypeTracker?
+    private var selectedCategory: String?
+    private var trackerSchedule: Set<String> = []
     
     private let emojis: [String] = [
         "🙂", "😻", "🌺", "🐶", "❤️", "😱",
@@ -109,7 +107,7 @@ final class CreatingNewTrackerViewController: UIViewController {
         // TODO: - добавить делегата и датасорс
         return collectionView
     }()
-    
+    // MARK: - Inits
     init(_ typeTracker: TypeTracker? = nil) {
         self.typeTracker = typeTracker
         super.init(nibName: nil, bundle: nil)
@@ -118,29 +116,25 @@ final class CreatingNewTrackerViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+    // MARK: - Overriding Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .trWhite
         addSubviews()
         applyConstraints()
     }
-    
+    // MARK: - Private Methods
     private func addSubviews() {
         [textLabel,
          nameTextField,
          tableView,
          collectionView,
-         buttonStack].forEach { view.addSubview($0) }
+         buttonStack].forEach { view.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
     }
     
     private func applyConstraints() {
-        [textLabel,
-         nameTextField,
-         tableView,
-         collectionView,
-         buttonStack].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
-        
         guard let typeTracker = typeTracker else { return }
         
         NSLayoutConstraint.activate([
@@ -180,21 +174,19 @@ final class CreatingNewTrackerViewController: UIViewController {
     }
     
     @objc private func didTapCreateButton() {
-        dismiss(animated: true, completion: {
-//            self.delegate.addNewTrackerCategory(TrackerCategory(categoryName: "Важное", trackers: [Tracker(id: UUID(), name: "Tracker мучает меня", color: .color1, emoji: "😪", schedule: self.trackerSchedule)]))
-        })
+        dismiss(animated: true, completion: { })
         print("Создать")
     }
     
-//    private func activateCreateButton() {
-//        if [nameTextField.text,
-//            trackerCategory.trackers[].forEach { $0 } {
-//            self.createButton.isEnabled = true
-//            self.createButton.backgroundColor = .trBlack
-//        }
-//    }
+    //    private func activateCreateButton() {
+    //        if [nameTextField.text,
+    //            trackerCategory.trackers[].forEach { $0 } {
+    //            self.createButton.isEnabled = true
+    //            self.createButton.backgroundColor = .trBlack
+    //        }
+    //    }
 }
-// MARK: - Extesions[
+// MARK: - Extension: TableViewDataSource
 extension CreatingNewTrackerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let typeTracker = typeTracker else { return 0 }
@@ -212,12 +204,12 @@ extension CreatingNewTrackerViewController: UITableViewDataSource {
         cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         switch indexPath.row {
         case 0:
-            cell.detailTextLabel?.text = "Важное"//trackerCategory.categoryName
+            cell.detailTextLabel?.text = selectedCategory
         case 1:
             if trackerSchedule.count != 7 {
                 cell.detailTextLabel?.text = trackerSchedule.joined(separator: ", ")
             } else {
-                cell.detailTextLabel?.text = "Ежедневно"
+                cell.detailTextLabel?.text = "Каждый день"
             }
         default:
             break
@@ -228,7 +220,7 @@ extension CreatingNewTrackerViewController: UITableViewDataSource {
         return cell
     }
 }
-
+// MARK: - Extension: TableViewDelegate
 extension CreatingNewTrackerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 75

@@ -8,9 +8,8 @@
 import UIKit
 
 final class SelectingNewTrackerViewController: UIViewController {
-    
     weak var delegate: TrackersViewController?
-    
+    // MARK: - Private Properties
     private lazy var textLabel: UILabel = {
         let label = UILabel()
         label.text = "Создание трекера"
@@ -49,7 +48,7 @@ final class SelectingNewTrackerViewController: UIViewController {
         }
         return stackView
     }()
-    
+    // MARK: - Inits
     init() {
         super.init(nibName: nil, bundle: nil)
     }
@@ -57,14 +56,14 @@ final class SelectingNewTrackerViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+    // MARK: - Overriding Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .trWhite
         addSubviews()
         applyConstraints()
     }
-    
+    // MARK: - Private Methods
     private func addSubviews() {
         [textLabel,
          buttonsStack].forEach { view.addSubview($0) }

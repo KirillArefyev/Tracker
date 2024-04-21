@@ -8,12 +8,13 @@
 import UIKit
 
 final class HeaderTrackersCollectionView: UICollectionReusableView {
+    static let identifier = "header"
     
     private lazy var titleCategory: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 19, weight: .bold)
         label.textColor = .trBlack
-        label.text = "Домашний уют"
+        label.text = "Название категории"
         label.textAlignment = .left
         return label
     }()
@@ -34,5 +35,9 @@ final class HeaderTrackersCollectionView: UICollectionReusableView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setTitleCategory(_ categoryName: String) {
+        titleCategory.text = categoryName
     }
 }

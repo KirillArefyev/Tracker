@@ -9,8 +9,8 @@ import UIKit
 
 final class TrackersViewController: UIViewController {
     // MARK: - Private Properties
-    private var categories: [TrackerCategory]?
-    private var completedTrakers: [TrackerRecord]?
+    private var categories: [TrackerCategory] = []
+    private var completedTrakers: [TrackerRecord] = []
     private var currentDate = Date()
     
     private lazy var noTrackersImage: UIImageView = {
@@ -35,6 +35,7 @@ final class TrackersViewController: UIViewController {
         stackView.spacing = 8.0
         [noTrackersImage,
          noTrakersText].forEach { stackView.addArrangedSubview($0) }
+        stackView.isHidden = true
         return stackView
     }()
     
@@ -60,13 +61,12 @@ final class TrackersViewController: UIViewController {
         stackView.spacing = 8.0
         [errorImage,
          errorText].forEach { stackView.addArrangedSubview($0) }
+        stackView.isHidden = true
         return stackView
     }()
     
     private lazy var addTrackerButton: UIBarButtonItem = {
-        let addTrackerButton = UIBarButtonItem(barButtonSystemItem: .add,
-                                               target: self,
-                                               action: #selector(didTapToAddNewTracker))
+        let addTrackerButton = UIBarButtonItem(image: UIImage(systemName: "plus")?.applyingSymbolConfiguration(.init(pointSize: CGFloat(18), weight: .semibold)), style: .plain, target: self, action: #selector(didTapToAddNewTracker))
         return addTrackerButton
     }()
     
@@ -96,13 +96,12 @@ final class TrackersViewController: UIViewController {
     
     private lazy var  trackersCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        collectionView.backgroundColor = .yellow
-        collectionView.register(TrackersCollectionViewCell.self, forCellWithReuseIdentifier: TrackersCollectionViewCell.trackerCellIdentifier)
-        // TODO: - зарегистрировать хедер, когда появится
-        //collectionView.dataSource = self
-        //collectionView.delegate = self
-        //collectionView.allowsMultipleSelection = false
-        //collectionView.reloadData()
+        collectionView.register(TrackersCollectionViewCell.self, forCellWithReuseIdentifier: TrackersCollectionViewCell.identifier)
+        collectionView.register(HeaderTrackersCollectionView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderTrackersCollectionView.identifier)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.isHidden = false
         return collectionView
     }()
     // MARK: - Inits
@@ -120,21 +119,18 @@ final class TrackersViewController: UIViewController {
         setupNavBar()
         addSubviews()
         applyConstraints()
-        noTrackersStub.isHidden = false // удалить - только для проверки вью
-        errorStub.isHidden = true // удалить - только для проверки вью
+        checkItemsForCollectionView()
     }
     // MARK: - Private Methods
     private func addSubviews() {
         [noTrackersStub,
          errorStub,
-         trackersCollectionView].forEach { view.addSubview($0) }
+         trackersCollectionView].forEach { view.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
     }
     
     private func applyConstraints() {
-        [noTrackersStub,
-         errorStub,
-         trackersCollectionView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
-        
         NSLayoutConstraint.activate([
             noTrackersStub.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
             noTrackersStub.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
@@ -161,6 +157,26 @@ final class TrackersViewController: UIViewController {
         }
     }
     
+    private func checkCategoryIsExist() -> Bool {
+        return categories.isEmpty
+    }
+    
+    private func checkTrackersIsExist(_ categories: [TrackerCategory]) -> Bool {
+        for category in categories {
+            if category.trackers.isEmpty {
+                return true
+            }
+        }
+        return false
+    }
+    
+    private func checkItemsForCollectionView() {
+        if checkCategoryIsExist() || checkTrackersIsExist(categories) == true {
+            trackersCollectionView.isHidden = true
+            noTrackersStub.isHidden = false
+        }
+    }
+    
     @objc private func didTapToAddNewTracker() {
         let selectingNewTrackerViewController = SelectingNewTrackerViewController()
         selectingNewTrackerViewController.delegate = self
@@ -177,21 +193,54 @@ final class TrackersViewController: UIViewController {
         print("Выбранная дата: \(formattedDate)")
     }
 }
-//// MARK: - Extensions
-//extension TrackersViewController: UICollectionViewDataSource {
-//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        return 4
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath)
-//        cell.contentView.backgroundColor = .orange
-//        return cell
-//    }
-//
-//
-//}
-//
-//extension TrackersViewController: UICollectionViewDelegateFlowLayout {
-//
-//}
+// MARK: - Extension: CollectionViewDataSource
+extension TrackersViewController: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return categories.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return categories[section].trackers.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackersCollectionViewCell.identifier, for: indexPath) as? TrackersCollectionViewCell else { return UICollectionViewCell() }
+        let tracker = categories[indexPath.section].trackers[indexPath.row]
+        cell.configurateCell(for: tracker)
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderTrackersCollectionView.identifier, for: indexPath) as? HeaderTrackersCollectionView else { return UICollectionReusableView() }
+        let categoryName = categories[indexPath.section].categoryName
+        view.setTitleCategory(categoryName)
+        return view
+    }
+}
+// MARK: - Extension: CollectionViewDelegate
+extension TrackersViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: (collectionView.bounds.width - 16 * 2 - 9) / 2, height: 148 )
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        let indexPath = IndexPath(row: 0, section: section)
+        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
+        return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width,
+                                                         height: UIView.layoutFittingCompressedSize.height),
+                                                  withHorizontalFittingPriority: .required,
+                                                  verticalFittingPriority: .fittingSizeLevel)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 12, left: 16, bottom: 16, right: 16)
+    }
+}
