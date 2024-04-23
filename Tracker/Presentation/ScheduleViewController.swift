@@ -7,9 +7,16 @@
 
 import UIKit
 
+protocol ScheduleViewControllerDelegate: AnyObject {
+    func createSchedule(_ selectedDays: [WeekDay])
+}
+
 final class ScheduleViewController: UIViewController {
-    weak var delegate: CreatingNewTrackerViewController?
+    weak var delegate: ScheduleViewControllerDelegate?
     // MARK: - Private Properties
+    private var selectedDays: [WeekDay] = []
+    private let weekDays = WeekDay.allCases
+    
     private lazy var textLabel: UILabel = {
         let label = UILabel()
         label.text = "Расписание"
@@ -40,6 +47,7 @@ final class ScheduleViewController: UIViewController {
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
         button.addTarget(self, action: #selector(didTapReadyButton), for: .touchUpInside)
+        button.isEnabled = false
         return button
     }()
     // MARK: - Inits
@@ -56,7 +64,6 @@ final class ScheduleViewController: UIViewController {
         view.backgroundColor = .trWhite
         addSubviews()
         applyConstraints()
-        
     }
     // MARK: - Private Methods
     private func addSubviews() {
@@ -85,36 +92,49 @@ final class ScheduleViewController: UIViewController {
     }
     
     @objc private func didTapReadyButton() {
-        dismiss(animated: true)
+        dismiss(animated: true) {
+            self.delegate?.createSchedule(self.selectedDays)
+        }
     }
 }
 // MARK: - Extension: TableViewDataSource
 extension ScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return WeekDay.allCases.count
+        return weekDays.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
         cell.backgroundColor = .clear
         cell.selectionStyle = .none
-        let day = WeekDay.allCases[indexPath.row].dayOfWeek
+        let day = weekDays[indexPath.row].fullName
         cell.textLabel?.text = day
         cell.textLabel?.textColor = .trBlack
         cell.textLabel?.font = .systemFont(ofSize: 17, weight: .regular)
         
         let switchView = UISwitch()
+        switchView.tag = indexPath.row
         switchView.addTarget(self, action: #selector(switchToggled), for: .valueChanged)
+        switchView.onTintColor = .trBlue
         cell.accessoryView = switchView
         
-        if indexPath.row == WeekDay.allCases.count - 1 {
+        if indexPath.row == weekDays.count - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
         }
         return cell
     }
     
-    @objc func switchToggled(_ sender: UISwitch) {
-        
+    @objc private func switchToggled(_ sender: UISwitch) {
+        let day = weekDays[sender.tag]
+        if sender.isOn {
+            selectedDays.append(day)
+            readyButton.isEnabled = true
+        } else {
+            selectedDays.removeAll { $0 == day }
+            if selectedDays.isEmpty {
+                readyButton.isEnabled = false
+            }
+        }
     }
 }
 // MARK: - Extension: TableViewDelegate

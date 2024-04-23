@@ -11,8 +11,13 @@ final class CreatingNewTrackerViewController: UIViewController {
     weak var delegate: SelectingNewTrackerViewController?
     // MARK: - Private Properties
     private var typeTracker: TypeTracker?
-    private var selectedCategory: String? = "Важное"
-    private var trackerSchedule: Set<String> = []
+    private var selectedCategory: [TrackerCategory] = [TrackerCategory(categoryName: "Важное")]
+    private var trackerSchedule: [WeekDay] = []
+    private var scheduleForTable: String = "" {
+        didSet {
+            tableView.reloadData()
+        }
+    }
     
     private let emojis: [String] = [
         "🙂", "😻", "🌺", "🐶", "❤️", "😱",
@@ -59,6 +64,7 @@ final class CreatingNewTrackerViewController: UIViewController {
         tableView.separatorInset =  UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         tableView.separatorColor = .trGray
         tableView.isScrollEnabled = false
+        tableView.reloadData()
         return tableView
     }()
     
@@ -202,10 +208,10 @@ extension CreatingNewTrackerViewController: UITableViewDataSource {
         cell.selectionStyle = .none
         switch indexPath.row {
         case 0:
-            cell.detailTextLabel?.text = selectedCategory
+            cell.detailTextLabel?.text = "Важное" // TODO: - позже подставлять значение из вью создания и выбора категории
         case 1:
             if trackerSchedule.count != 7 {
-                cell.detailTextLabel?.text = trackerSchedule.joined(separator: ", ")
+                cell.detailTextLabel?.text = scheduleForTable
             } else {
                 cell.detailTextLabel?.text = "Каждый день"
             }
@@ -216,6 +222,13 @@ extension CreatingNewTrackerViewController: UITableViewDataSource {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
         }
         return cell
+    }
+    
+    func convertScheduleToString(_ sellectedDays: [WeekDay]) -> String {
+        let newSchedule = sellectedDays.map { $0.shortName }
+        let list = newSchedule.joined(separator: ", ")
+        //tableView.reloadData()
+        return list
     }
 }
 // MARK: - Extension: TableViewDelegate
@@ -240,4 +253,11 @@ extension CreatingNewTrackerViewController: UITableViewDelegate {
 }
 
 extension CreatingNewTrackerViewController: UITextFieldDelegate {
+}
+
+extension CreatingNewTrackerViewController: ScheduleViewControllerDelegate {
+    func createSchedule(_ selectedDays: [WeekDay]) {
+        scheduleForTable = convertScheduleToString(selectedDays)
+        self.trackerSchedule = selectedDays
+    }
 }

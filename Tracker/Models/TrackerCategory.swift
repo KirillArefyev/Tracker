@@ -8,7 +8,7 @@
 import Foundation
 
 struct TrackerCategory {
-    let categoryName: String = "Важное"
+    let categoryName: String
     let trackers: [Tracker] = [Tracker(id: UUID(),
                                        name: "Раз",
                                        color: .color1,

@@ -7,10 +7,10 @@
 
 import Foundation
 
-enum WeekDay: CaseIterable {
-    case monday, tuesday, wednesday, thursday, friday, saturday, sunday
+enum WeekDay: Int, CaseIterable {
+    case monday = 1, tuesday, wednesday, thursday, friday, saturday, sunday
     
-    var dayOfWeek: String {
+    var fullName: String {
         switch self {
         case .monday:
             return "Понедельник"
