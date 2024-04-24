@@ -7,11 +7,19 @@
 
 import UIKit
 
+protocol CreatingNewTrackerViewControllerDelegate: AnyObject {
+    func appendTrackerToTrackerCategory(_ trackerCategory: TrackerCategory)
+}
+
 final class CreatingNewTrackerViewController: UIViewController {
     weak var delegate: SelectingNewTrackerViewController?
     // MARK: - Private Properties
-    private var typeTracker: TypeTracker?
-    private var selectedCategory: [TrackerCategory] = [TrackerCategory(categoryName: "Важное")]
+    private var typeTracker: TypeTracker
+    private var trackerName: String = ""
+    private var trackerColor: UIColor = selectionColors.randomElement() ?? .yellow
+    private var trackerEmoji: String = emojis.randomElement() ?? ""
+    private var tracker: Tracker?
+    private var categoryName: String = "Какая-то категория"
     private var trackerSchedule: [WeekDay] = []
     private var scheduleForTable: String = "" {
         didSet {
@@ -19,13 +27,13 @@ final class CreatingNewTrackerViewController: UIViewController {
         }
     }
     
-    private let emojis: [String] = [
+    static let emojis: [String] = [
         "🙂", "😻", "🌺", "🐶", "❤️", "😱",
         "😇", "😡", "🥶", "🤔", "🙌", "🍔",
         "🥦", "🏓", "🥇", "🎸", "🏝", "😪"
     ]
     
-    private let selectionColors: [UIColor] = [
+    static let selectionColors: [UIColor] = [
         .color1, .color2, .color3, .color4, .color5, .color6,
         .color7, .color8, .color9, .color10, .color11, .color12,
         .color13, .color14, .color15, .color16, .color17, .color18
@@ -34,7 +42,7 @@ final class CreatingNewTrackerViewController: UIViewController {
     private lazy var textLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.text = typeTracker?.title
+        label.text = typeTracker.title
         label.textColor = .trBlack
         return label
     }()
@@ -50,6 +58,12 @@ final class CreatingNewTrackerViewController: UIViewController {
         textField.clearButtonMode = .whileEditing
         textField.leftViewMode = .always
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: textField.frame.height))
+        textField.resignFirstResponder()
+        textField.keyboardType = .default
+        textField.returnKeyType = .go
+        textField.autocorrectionType = .no
+        textField.delegate = self
+        textField.addTarget(self, action: #selector(setTrackerName), for: .editingDidEndOnExit)
         return textField
     }()
     
@@ -84,6 +98,7 @@ final class CreatingNewTrackerViewController: UIViewController {
         button.backgroundColor = .trGray
         button.setTitle("Создать", for: .normal)
         button.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
+        button.isEnabled = false
         return button
     }()
     
@@ -111,7 +126,7 @@ final class CreatingNewTrackerViewController: UIViewController {
         return collectionView
     }()
     // MARK: - Inits
-    init(_ typeTracker: TypeTracker? = nil) {
+    init(_ typeTracker: TypeTracker) {
         self.typeTracker = typeTracker
         super.init(nibName: nil, bundle: nil)
     }
@@ -125,6 +140,7 @@ final class CreatingNewTrackerViewController: UIViewController {
         view.backgroundColor = .trWhite
         addSubviews()
         applyConstraints()
+        trackerSchedule = typeTracker.trackerSchedule
     }
     // MARK: - Private Methods
     private func addSubviews() {
@@ -138,8 +154,6 @@ final class CreatingNewTrackerViewController: UIViewController {
     }
     
     private func applyConstraints() {
-        guard let typeTracker = typeTracker else { return }
-        
         NSLayoutConstraint.activate([
             textLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             textLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
@@ -171,33 +185,54 @@ final class CreatingNewTrackerViewController: UIViewController {
         }
     }
     
+    private func activationCreateButton() {
+        createButton.isEnabled = true
+        createButton.backgroundColor = .trBlack
+    }
+    
+    private func validationOfRequiredValues() {
+        if ((nameTextField.text?.isEmpty != true) &&
+            categoryName.isEmpty != true &&
+            trackerSchedule.isEmpty != true &&
+            trackerColor != nil &&
+            trackerEmoji != nil) {
+            activationCreateButton()
+        } else {
+            return
+        }
+    }
+    
+    func createTracker() {
+        
+    }
+    
+    @objc func setTrackerName(_ sender: UITextField) {
+        if sender.text != nil {
+            trackerName = sender.text ?? ""
+            validationOfRequiredValues()
+        }
+    }
+    
     @objc private func didTapCancelButton() {
         dismiss(animated: true)
-        print("Отменить")
     }
     
     @objc private func didTapCreateButton() {
-        dismiss(animated: true, completion: { })
-        print("Создать")
+        // TODO: - создание трекера и возврат на главное вью
+        dismiss(animated: true) { [weak self] in
+            guard let self = self else { return }
+            let trackerCategory = TrackerCategory(categoryName: self.categoryName, trackers: [self.tracker ?? Tracker(id: UUID(), name: "hfp", color: .color1, emoji: "", schedule: [])])
+            self.delegate?.appendTrackerToTrackerCategory(trackerCategory)
+        }
     }
-    
-    //    private func activateCreateButton() {
-    //        if [nameTextField.text,
-    //            trackerCategory.trackers[].forEach { $0 } {
-    //            self.createButton.isEnabled = true
-    //            self.createButton.backgroundColor = .trBlack
-    //        }
-    //    }
 }
-// MARK: - Extension: TableViewDataSource
+// MARK: - TableViewDataSource
 extension CreatingNewTrackerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let typeTracker = typeTracker else { return 0 }
         return typeTracker.numberOfRows
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let typeTracker = typeTracker else { return UITableViewCell() }
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "tableCell")
         cell.accessoryType = .disclosureIndicator
         cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
@@ -208,7 +243,7 @@ extension CreatingNewTrackerViewController: UITableViewDataSource {
         cell.selectionStyle = .none
         switch indexPath.row {
         case 0:
-            cell.detailTextLabel?.text = "Важное" // TODO: - позже подставлять значение из вью создания и выбора категории
+            cell.detailTextLabel?.text = categoryName // TODO: - позже подставлять значение из вью создания и выбора категории
         case 1:
             if trackerSchedule.count != 7 {
                 cell.detailTextLabel?.text = scheduleForTable
@@ -227,11 +262,10 @@ extension CreatingNewTrackerViewController: UITableViewDataSource {
     func convertScheduleToString(_ sellectedDays: [WeekDay]) -> String {
         let newSchedule = sellectedDays.map { $0.shortName }
         let list = newSchedule.joined(separator: ", ")
-        //tableView.reloadData()
         return list
     }
 }
-// MARK: - Extension: TableViewDelegate
+// MARK: - TableViewDelegate
 extension CreatingNewTrackerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 75
@@ -245,19 +279,28 @@ extension CreatingNewTrackerViewController: UITableViewDelegate {
             let scheduleViewController = ScheduleViewController()
             scheduleViewController.delegate = self
             present(scheduleViewController, animated: true)
-            print("Переход к экрану расписания")
         default:
             break
         }
     }
 }
-
+// MARK: - TextFieldDelegate
 extension CreatingNewTrackerViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let currentText = textField.text ?? ""
+        let newLength = currentText.count + string.count - range.length
+        return newLength <= 38
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        return true
+    }
 }
-
+// MARK: - ScheduleViewControllerDelegate
 extension CreatingNewTrackerViewController: ScheduleViewControllerDelegate {
     func createSchedule(_ selectedDays: [WeekDay]) {
         scheduleForTable = convertScheduleToString(selectedDays)
-        self.trackerSchedule = selectedDays
+        trackerSchedule = selectedDays
+        validationOfRequiredValues()
     }
 }

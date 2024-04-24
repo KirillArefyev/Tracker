@@ -50,4 +50,13 @@ enum TypeTracker {
             return newCellName.count
         }
     }
+    
+    var trackerSchedule: [WeekDay] {
+        switch self {
+        case .habit:
+            return []
+        case .irregularEvent:
+            return WeekDay.allCases
+        }
+    }
 }

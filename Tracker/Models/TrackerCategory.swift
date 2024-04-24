@@ -9,10 +9,5 @@ import Foundation
 
 struct TrackerCategory {
     let categoryName: String
-    let trackers: [Tracker] = [Tracker(id: UUID(),
-                                       name: "Раз",
-                                       color: .color1,
-                                       emoji: "🤔",
-                                       schedule: []
-                                      )]
+    let trackers: [Tracker]
 }

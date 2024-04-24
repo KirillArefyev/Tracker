@@ -123,6 +123,5 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
             plusButton.setImage(plus, for: .normal)
             plusButton.backgroundColor = colorView.backgroundColor
         }
-        print("Кнопка нажата")
     }
 }

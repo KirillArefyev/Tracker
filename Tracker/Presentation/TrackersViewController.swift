@@ -104,14 +104,6 @@ final class TrackersViewController: UIViewController {
         collectionView.isHidden = false
         return collectionView
     }()
-    // MARK: - Inits
-    init() {
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -181,7 +173,6 @@ final class TrackersViewController: UIViewController {
         let selectingNewTrackerViewController = SelectingNewTrackerViewController()
         selectingNewTrackerViewController.delegate = self
         present(selectingNewTrackerViewController, animated: true)
-        print("Добавление трекера")
     }
     
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
@@ -189,11 +180,13 @@ final class TrackersViewController: UIViewController {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd.MM.yy"
         let formattedDate = dateFormatter.string(from: selectedDate)
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100), execute: { self.dismiss(animated: false) })
-        print("Выбранная дата: \(formattedDate)")
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100), execute: { [weak self] in
+            guard let self = self else { return }
+            self.dismiss(animated: false)
+        })
     }
 }
-// MARK: - Extension: CollectionViewDataSource
+// MARK: - CollectionViewDataSource
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return categories.count
@@ -217,7 +210,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         return view
     }
 }
-// MARK: - Extension: CollectionViewDelegate
+// MARK: - CollectionViewDelegate
 extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: (collectionView.bounds.width - 16 * 2 - 9) / 2, height: 148 )
@@ -242,5 +235,11 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 12, left: 16, bottom: 16, right: 16)
+    }
+}
+// MARK: - SelectingNewTrackerViewController
+extension TrackersViewController: SelectingNewTrackerViewControllerDelegate {
+    func appendTrackerToTrackerCategory(_ trackerCategory: TrackerCategory) {
+        dismiss(animated: true)
     }
 }

@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol SelectingNewTrackerViewControllerDelegate: AnyObject {
+    func appendTrackerToTrackerCategory(_ trackerCategory: TrackerCategory)
+}
+
 final class SelectingNewTrackerViewController: UIViewController {
     weak var delegate: TrackersViewController?
     // MARK: - Private Properties
@@ -95,13 +99,17 @@ final class SelectingNewTrackerViewController: UIViewController {
         let creatingNewTrackerViewController = CreatingNewTrackerViewController(.habit)
         creatingNewTrackerViewController.delegate = self
         present(creatingNewTrackerViewController, animated: true)
-        print("Создание новой привычки") // удалить
     }
     
     @objc private func didTapToIrregularEventButton() {
         let creatingNewTrackerViewController = CreatingNewTrackerViewController(.irregularEvent)
         creatingNewTrackerViewController.delegate = self
         present(creatingNewTrackerViewController, animated: true)
-        print("Создание нового нерегулярного события") // удалить
+    }
+}
+// MARK: - CreationNewTrackerViewControllerDelegate
+extension SelectingNewTrackerViewController: CreatingNewTrackerViewControllerDelegate {
+    func appendTrackerToTrackerCategory(_ trackerCategory: TrackerCategory) {
+        self.delegate?.appendTrackerToTrackerCategory(trackerCategory)
     }
 }

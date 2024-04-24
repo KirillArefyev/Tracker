@@ -92,12 +92,14 @@ final class ScheduleViewController: UIViewController {
     }
     
     @objc private func didTapReadyButton() {
-        dismiss(animated: true) {
-            self.delegate?.createSchedule(self.selectedDays)
+        dismiss(animated: true) { [weak self] in
+            guard let self = self else { return }
+            let sortedDays = self.selectedDays.sorted { $0.rawValue < $1.rawValue }
+            self.delegate?.createSchedule(sortedDays)
         }
     }
 }
-// MARK: - Extension: TableViewDataSource
+// MARK: - TableViewDataSource
 extension ScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return weekDays.count
@@ -137,7 +139,7 @@ extension ScheduleViewController: UITableViewDataSource {
         }
     }
 }
-// MARK: - Extension: TableViewDelegate
+// MARK: - TableViewDelegate
 extension ScheduleViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 75
