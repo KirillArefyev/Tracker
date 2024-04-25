@@ -101,7 +101,7 @@ final class TrackersViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.showsVerticalScrollIndicator = false
-        collectionView.isHidden = false
+        collectionView.isHidden = true
         return collectionView
     }()
     // MARK: - Overrides Methods
@@ -111,7 +111,7 @@ final class TrackersViewController: UIViewController {
         setupNavBar()
         addSubviews()
         applyConstraints()
-        checkItemsForCollectionView()
+        checkTrackerIsExist()
     }
     // MARK: - Private Methods
     private func addSubviews() {
@@ -149,23 +149,13 @@ final class TrackersViewController: UIViewController {
         }
     }
     
-    private func checkCategoryIsExist() -> Bool {
-        return categories.isEmpty
-    }
-    
-    private func checkTrackersIsExist(_ categories: [TrackerCategory]) -> Bool {
-        for category in categories {
-            if category.trackers.isEmpty {
-                return true
-            }
-        }
-        return false
-    }
-    
-    private func checkItemsForCollectionView() {
-        if checkCategoryIsExist() || checkTrackersIsExist(categories) == true {
+    private func checkTrackerIsExist() {
+        if categories.isEmpty {
             trackersCollectionView.isHidden = true
             noTrackersStub.isHidden = false
+        } else {
+            trackersCollectionView.isHidden = false
+            noTrackersStub.isHidden = true
         }
     }
     
@@ -176,10 +166,8 @@ final class TrackersViewController: UIViewController {
     }
     
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
-        let selectedDate = sender.date
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd.MM.yy"
-        let formattedDate = dateFormatter.string(from: selectedDate)
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100), execute: { [weak self] in
             guard let self = self else { return }
             self.dismiss(animated: false)
@@ -205,7 +193,7 @@ extension TrackersViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderTrackersCollectionView.identifier, for: indexPath) as? HeaderTrackersCollectionView else { return UICollectionReusableView() }
-        let categoryName = categories[indexPath.section].categoryName
+        let categoryName = categories[indexPath.section].name
         view.setTitleCategory(categoryName)
         return view
     }
@@ -241,5 +229,18 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 extension TrackersViewController: SelectingNewTrackerViewControllerDelegate {
     func appendTrackerToTrackerCategory(_ trackerCategory: TrackerCategory) {
         dismiss(animated: true)
+        var newCategories = categories
+        if !newCategories.contains(where: { $0.name == trackerCategory.name }) {
+            newCategories.append(trackerCategory)
+            categories = newCategories
+        } else {
+            guard let caategoryIndex = newCategories.firstIndex(where: { $0.name == trackerCategory.name }) else { return }
+            let oldTrackers = categories[caategoryIndex].trackers
+            let newTrackers = oldTrackers + trackerCategory.trackers
+            let newCategory = TrackerCategory(name: trackerCategory.name, trackers: newTrackers)
+            categories[caategoryIndex] = newCategory
+        }
+        trackersCollectionView.reloadData()
+        checkTrackerIsExist()
     }
 }

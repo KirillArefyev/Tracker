@@ -12,21 +12,7 @@ protocol CreatingNewTrackerViewControllerDelegate: AnyObject {
 }
 
 final class CreatingNewTrackerViewController: UIViewController {
-    weak var delegate: SelectingNewTrackerViewController?
-    // MARK: - Private Properties
-    private var typeTracker: TypeTracker
-    private var trackerName: String = ""
-    private var trackerColor: UIColor = selectionColors.randomElement() ?? .yellow
-    private var trackerEmoji: String = emojis.randomElement() ?? ""
-    private var tracker: Tracker?
-    private var categoryName: String = "Какая-то категория"
-    private var trackerSchedule: [WeekDay] = []
-    private var scheduleForTable: String = "" {
-        didSet {
-            tableView.reloadData()
-        }
-    }
-    
+    // MARK: - Static Properties
     static let emojis: [String] = [
         "🙂", "😻", "🌺", "🐶", "❤️", "😱",
         "😇", "😡", "🥶", "🤔", "🙌", "🍔",
@@ -38,6 +24,20 @@ final class CreatingNewTrackerViewController: UIViewController {
         .color7, .color8, .color9, .color10, .color11, .color12,
         .color13, .color14, .color15, .color16, .color17, .color18
     ]
+    // MARK: - Public Properties
+    weak var delegate: SelectingNewTrackerViewController?
+    // MARK: - Private Properties
+    private var typeTracker: TypeTracker
+    private var trackerName: String = ""
+    private var trackerColor: UIColor = { selectionColors.randomElement() ?? .yellow }()
+    private var trackerEmoji: String = { emojis.randomElement() ?? "" }()
+    private var trackerCategory: String = "Какая-то категория"
+    private var trackerSchedule: [WeekDay] = []
+    private var scheduleForTable: String = "" {
+        didSet {
+            tableView.reloadData()
+        }
+    }
     
     private lazy var textLabel: UILabel = {
         let label = UILabel()
@@ -192,7 +192,7 @@ final class CreatingNewTrackerViewController: UIViewController {
     
     private func validationOfRequiredValues() {
         if ((nameTextField.text?.isEmpty != true) &&
-            categoryName.isEmpty != true &&
+            trackerCategory.isEmpty != true &&
             trackerSchedule.isEmpty != true &&
             trackerColor != nil &&
             trackerEmoji != nil) {
@@ -202,11 +202,22 @@ final class CreatingNewTrackerViewController: UIViewController {
         }
     }
     
-    func createTracker() {
-        
+    private func newTracker() -> Tracker {
+        let tracker = Tracker(id: UUID(),
+                              name: trackerName,
+                              color: trackerColor,
+                              emoji: trackerEmoji,
+                              schedule: trackerSchedule)
+        return tracker
     }
     
-    @objc func setTrackerName(_ sender: UITextField) {
+    private func createCategory(with newTracker: () -> Tracker) -> TrackerCategory {
+        let category = TrackerCategory(name: trackerCategory,
+                                       trackers: [newTracker()])
+        return category
+    }
+    
+    @objc private func setTrackerName(_ sender: UITextField) {
         if sender.text != nil {
             trackerName = sender.text ?? ""
             validationOfRequiredValues()
@@ -221,7 +232,7 @@ final class CreatingNewTrackerViewController: UIViewController {
         // TODO: - создание трекера и возврат на главное вью
         dismiss(animated: true) { [weak self] in
             guard let self = self else { return }
-            let trackerCategory = TrackerCategory(categoryName: self.categoryName, trackers: [self.tracker ?? Tracker(id: UUID(), name: "hfp", color: .color1, emoji: "", schedule: [])])
+            let trackerCategory = self.createCategory(with: self.newTracker)
             self.delegate?.appendTrackerToTrackerCategory(trackerCategory)
         }
     }
@@ -243,7 +254,7 @@ extension CreatingNewTrackerViewController: UITableViewDataSource {
         cell.selectionStyle = .none
         switch indexPath.row {
         case 0:
-            cell.detailTextLabel?.text = categoryName // TODO: - позже подставлять значение из вью создания и выбора категории
+            cell.detailTextLabel?.text = trackerCategory // TODO: - позже подставлять значение из вью создания и выбора категории
         case 1:
             if trackerSchedule.count != 7 {
                 cell.detailTextLabel?.text = scheduleForTable
@@ -259,7 +270,7 @@ extension CreatingNewTrackerViewController: UITableViewDataSource {
         return cell
     }
     
-    func convertScheduleToString(_ sellectedDays: [WeekDay]) -> String {
+    private func convertScheduleToString(_ sellectedDays: [WeekDay]) -> String {
         let newSchedule = sellectedDays.map { $0.shortName }
         let list = newSchedule.joined(separator: ", ")
         return list
