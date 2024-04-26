@@ -10,8 +10,9 @@ import UIKit
 final class TrackersViewController: UIViewController {
     // MARK: - Private Properties
     private var categories: [TrackerCategory] = []
-    private var completedTrakers: [TrackerRecord] = []
+    private var completedTrackers: [TrackerRecord] = []
     private var currentDate = Date()
+    private var visibleCategories: [TrackerCategory] = []
     
     private lazy var noTrackersImage: UIImageView = {
         let imageView = UIImageView()
@@ -72,6 +73,7 @@ final class TrackersViewController: UIViewController {
     
     private lazy var datePicker: UIDatePicker = {
         let datePicker = UIDatePicker()
+        datePicker.date = currentDate
         datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
         datePicker.tintColor = .trBlue
@@ -166,8 +168,6 @@ final class TrackersViewController: UIViewController {
     }
     
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yy"
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100), execute: { [weak self] in
             guard let self = self else { return }
             self.dismiss(animated: false)
@@ -192,7 +192,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         let tracker = categories[indexPath.section].trackers[indexPath.row]
         cell.delegate = self
         let isCompleted = isTrackerCompleted(id: tracker.id)
-        let completedDays = completedTrakers.filter { $0.id == tracker.id }.count
+        let completedDays = completedTrackers.filter { $0.id == tracker.id }.count
         cell.configurateCell(for: tracker,
                              trackerIsCompleted: isCompleted,
                              completedDays: completedDays,
@@ -202,7 +202,7 @@ extension TrackersViewController: UICollectionViewDataSource {
     }
     
     private func isTrackerCompleted(id: UUID) -> Bool {
-        completedTrakers.contains { trackerRecord in
+        completedTrackers.contains { trackerRecord in
             return trackerRecord.id == id && isSameDay(trackerRecord)
         }
     }
@@ -274,13 +274,16 @@ extension TrackersViewController: SelectingTrackerViewControllerDelegate {
 // MARK: - TrackerCellDelegate
 extension TrackersViewController: TrackerCellDelegate {
     func completeTracker(id: UUID, at indexPath: IndexPath) {
-        let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
-        completedTrakers.append(trackerRecord)
-        trackersCollectionView.reloadItems(at: [indexPath])
+        let selectedDay = datePicker.date
+        if selectedDay <= currentDate {
+            let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
+            completedTrackers.append(trackerRecord)
+            trackersCollectionView.reloadItems(at: [indexPath])
+        }
     }
     
     func uncompliteTracker(id: UUID, at indexPath: IndexPath) {
-        completedTrakers.removeAll { trackerRecord in
+        completedTrackers.removeAll { trackerRecord in
             return trackerRecord.id == id && isSameDay(trackerRecord)
         }
         trackersCollectionView.reloadItems(at: [indexPath])

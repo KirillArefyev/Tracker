@@ -191,7 +191,7 @@ final class CreatingTrackerViewController: UIViewController {
     }
     
     private func validationOfRequiredValues() {
-        if ((nameTextField.text?.isEmpty != true) &&
+        if (trackerName != "" &&
             trackerCategory.isEmpty != true &&
             trackerSchedule.isEmpty != true &&
             trackerColor != nil &&

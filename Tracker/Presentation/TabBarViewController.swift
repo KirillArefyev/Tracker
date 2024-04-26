@@ -19,6 +19,10 @@ final class TabBarViewController: UITabBarController {
         tabBar.backgroundColor = .trWhite
         tabBar.tintColor = .trBlue
         
+        let separator = UIView(frame: CGRect(x: 0, y: 0, width: self.tabBar.frame.width, height: 0.5))
+        separator.backgroundColor = .trGray
+        self.tabBar.insertSubview(separator, at: 0)
+        
         let font = UIFont.systemFont(ofSize: 10, weight: .medium)
         UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.font: font], for: .normal)
         
