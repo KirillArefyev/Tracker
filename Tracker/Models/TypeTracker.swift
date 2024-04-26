@@ -56,7 +56,13 @@ enum TypeTracker {
         case .habit:
             return []
         case .irregularEvent:
-            return WeekDay.allCases
+            return [WeekDay.sunday,
+                    WeekDay.monday,
+                    WeekDay.tuesday,
+                    WeekDay.wednesday,
+                    WeekDay.thursday,
+                    WeekDay.friday,
+                    WeekDay.saturday]
         }
     }
 }

@@ -78,7 +78,7 @@ final class TrackersViewController: UIViewController {
         datePicker.datePickerMode = .date
         datePicker.tintColor = .trBlue
         datePicker.locale = Locale(identifier: "ru_RU")
-        datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
+        datePicker.addTarget(self, action: #selector(datePickerDateChanged), for: .valueChanged)
         return datePicker
     }()
     
@@ -103,7 +103,6 @@ final class TrackersViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.showsVerticalScrollIndicator = false
-        collectionView.isHidden = true
         return collectionView
     }()
     // MARK: - Overrides Methods
@@ -113,7 +112,9 @@ final class TrackersViewController: UIViewController {
         setupNavBar()
         addSubviews()
         applyConstraints()
-        checkTrackerIsExist()
+        categories = CategoriesMock.shared.categories /* моки для проверки фильтра
+                                                       для проверки добавления трекера закомментить строку */
+        datePickerDateChanged()
     }
     // MARK: - Private Methods
     private func addSubviews() {
@@ -151,14 +152,22 @@ final class TrackersViewController: UIViewController {
         }
     }
     
-    private func checkTrackerIsExist() {
-        if categories.isEmpty {
-            trackersCollectionView.isHidden = true
-            noTrackersStub.isHidden = false
-        } else {
-            trackersCollectionView.isHidden = false
-            noTrackersStub.isHidden = true
+    private func reloadVisibleCategories() {
+        let calendar = Calendar.current
+        let dayOfWeek = calendar.component(.weekday, from: datePicker.date)
+        visibleCategories = categories.compactMap { category in
+            let trackers = category.trackers.filter { tracker in
+                tracker.schedule.contains { day in
+                    day.rawValue == dayOfWeek
+                }
+            }
+            if trackers.isEmpty {
+                return nil
+            }
+            return TrackerCategory(name: category.name,
+                                   trackers: trackers)
         }
+        trackersCollectionView.reloadData()
     }
     
     @objc private func didTapToAddNewTracker() {
@@ -167,21 +176,22 @@ final class TrackersViewController: UIViewController {
         present(selectingTrackerViewController, animated: true)
     }
     
-    @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
+    @objc private func datePickerDateChanged() {
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100), execute: { [weak self] in
             guard let self = self else { return }
             self.dismiss(animated: false)
         })
+        reloadVisibleCategories()
     }
 }
 // MARK: - CollectionViewDataSource
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return categories.count
+        return visibleCategories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return categories[section].trackers.count
+        return visibleCategories[section].trackers.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -189,7 +199,7 @@ extension TrackersViewController: UICollectionViewDataSource {
             assertionFailure("❌ no cell")
             return UICollectionViewCell()
         }
-        let tracker = categories[indexPath.section].trackers[indexPath.row]
+        let tracker = visibleCategories[indexPath.section].trackers[indexPath.row]
         cell.delegate = self
         let isCompleted = isTrackerCompleted(id: tracker.id)
         let completedDays = completedTrackers.filter { $0.id == tracker.id }.count
@@ -217,7 +227,7 @@ extension TrackersViewController: UICollectionViewDataSource {
             assertionFailure("❌ no header")
             return UICollectionReusableView()
         }
-        let categoryName = categories[indexPath.section].name
+        let categoryName = visibleCategories[indexPath.section].name
         view.setTitleCategory(categoryName)
         return view
     }
@@ -268,7 +278,6 @@ extension TrackersViewController: SelectingTrackerViewControllerDelegate {
             categories[categoryIndex] = newCategory
         }
         trackersCollectionView.reloadData()
-        checkTrackerIsExist()
     }
 }
 // MARK: - TrackerCellDelegate
