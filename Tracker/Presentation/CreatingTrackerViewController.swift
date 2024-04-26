@@ -1,5 +1,5 @@
 //
-//  CreatingNewTrackerViewController.swift
+//  CreatingTrackerViewController.swift
 //  Tracker
 //
 //  Created by Кирилл Арефьев on 13.04.2024.
@@ -7,11 +7,11 @@
 
 import UIKit
 
-protocol CreatingNewTrackerViewControllerDelegate: AnyObject {
+protocol CreatingTrackerViewControllerDelegate: AnyObject {
     func appendTrackerToTrackerCategory(_ trackerCategory: TrackerCategory)
 }
 
-final class CreatingNewTrackerViewController: UIViewController {
+final class CreatingTrackerViewController: UIViewController {
     // MARK: - Static Properties
     static let emojis: [String] = [
         "🙂", "😻", "🌺", "🐶", "❤️", "😱",
@@ -25,7 +25,7 @@ final class CreatingNewTrackerViewController: UIViewController {
         .color13, .color14, .color15, .color16, .color17, .color18
     ]
     // MARK: - Public Properties
-    weak var delegate: SelectingNewTrackerViewController?
+    weak var delegate: SelectingTrackerViewController?
     // MARK: - Private Properties
     private var typeTracker: TypeTracker
     private var trackerName: String = ""
@@ -238,7 +238,7 @@ final class CreatingNewTrackerViewController: UIViewController {
     }
 }
 // MARK: - TableViewDataSource
-extension CreatingNewTrackerViewController: UITableViewDataSource {
+extension CreatingTrackerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return typeTracker.numberOfRows
     }
@@ -277,7 +277,7 @@ extension CreatingNewTrackerViewController: UITableViewDataSource {
     }
 }
 // MARK: - TableViewDelegate
-extension CreatingNewTrackerViewController: UITableViewDelegate {
+extension CreatingTrackerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 75
     }
@@ -296,7 +296,7 @@ extension CreatingNewTrackerViewController: UITableViewDelegate {
     }
 }
 // MARK: - TextFieldDelegate
-extension CreatingNewTrackerViewController: UITextFieldDelegate {
+extension CreatingTrackerViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let currentText = textField.text ?? ""
         let newLength = currentText.count + string.count - range.length
@@ -308,7 +308,7 @@ extension CreatingNewTrackerViewController: UITextFieldDelegate {
     }
 }
 // MARK: - ScheduleViewControllerDelegate
-extension CreatingNewTrackerViewController: ScheduleViewControllerDelegate {
+extension CreatingTrackerViewController: ScheduleViewControllerDelegate {
     func createSchedule(_ selectedDays: [WeekDay]) {
         scheduleForTable = convertScheduleToString(selectedDays)
         trackerSchedule = selectedDays

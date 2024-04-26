@@ -7,6 +7,11 @@
 
 import UIKit
 
+protocol TrackerCellDelegate: AnyObject {
+    func completeTracker(id: UUID)
+    func uncompliteTracker(id: UUID)
+}
+
 final class TrackersViewController: UIViewController {
     // MARK: - Private Properties
     private var categories: [TrackerCategory] = []
@@ -96,7 +101,7 @@ final class TrackersViewController: UIViewController {
     
     private lazy var  trackersCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        collectionView.register(TrackersCollectionViewCell.self, forCellWithReuseIdentifier: TrackersCollectionViewCell.identifier)
+        collectionView.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.identifier)
         collectionView.register(HeaderTrackersCollectionView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderTrackersCollectionView.identifier)
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -160,9 +165,9 @@ final class TrackersViewController: UIViewController {
     }
     
     @objc private func didTapToAddNewTracker() {
-        let selectingNewTrackerViewController = SelectingNewTrackerViewController()
-        selectingNewTrackerViewController.delegate = self
-        present(selectingNewTrackerViewController, animated: true)
+        let selectingTrackerViewController = SelectingTrackerViewController()
+        selectingTrackerViewController.delegate = self
+        present(selectingTrackerViewController, animated: true)
     }
     
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
@@ -185,7 +190,7 @@ extension TrackersViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackersCollectionViewCell.identifier, for: indexPath) as? TrackersCollectionViewCell else { return UICollectionViewCell() }
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackerCell.identifier, for: indexPath) as? TrackerCell else { return UICollectionViewCell() }
         let tracker = categories[indexPath.section].trackers[indexPath.row]
         cell.configurateCell(for: tracker)
         return cell
@@ -226,7 +231,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 // MARK: - SelectingNewTrackerViewController
-extension TrackersViewController: SelectingNewTrackerViewControllerDelegate {
+extension TrackersViewController: SelectingTrackerViewControllerDelegate {
     func appendTrackerToTrackerCategory(_ trackerCategory: TrackerCategory) {
         dismiss(animated: true)
         var newCategories = categories
@@ -243,4 +248,16 @@ extension TrackersViewController: SelectingNewTrackerViewControllerDelegate {
         trackersCollectionView.reloadData()
         checkTrackerIsExist()
     }
+}
+// MARK: - TrackerCellDelegate
+extension TrackersViewController: TrackerCellDelegate {
+    func completeTracker(id: UUID) {
+        
+    }
+    
+    func uncompliteTracker(id: UUID) {
+        
+    }
+    
+    
 }

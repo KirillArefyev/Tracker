@@ -1,5 +1,5 @@
 //
-//  SelectingNewTrackerViewController.swift
+//  SelectingTrackerViewController.swift
 //  Tracker
 //
 //  Created by Кирилл Арефьев on 13.04.2024.
@@ -7,11 +7,11 @@
 
 import UIKit
 
-protocol SelectingNewTrackerViewControllerDelegate: AnyObject {
+protocol SelectingTrackerViewControllerDelegate: AnyObject {
     func appendTrackerToTrackerCategory(_ trackerCategory: TrackerCategory)
 }
 
-final class SelectingNewTrackerViewController: UIViewController {
+final class SelectingTrackerViewController: UIViewController {
     weak var delegate: TrackersViewController?
     // MARK: - Private Properties
     private lazy var textLabel: UILabel = {
@@ -96,19 +96,19 @@ final class SelectingNewTrackerViewController: UIViewController {
     }
     
     @objc private func didTapToHabitButton() {
-        let creatingNewTrackerViewController = CreatingNewTrackerViewController(.habit)
-        creatingNewTrackerViewController.delegate = self
-        present(creatingNewTrackerViewController, animated: true)
+        let creatingTrackerViewController = CreatingTrackerViewController(.habit)
+        creatingTrackerViewController.delegate = self
+        present(creatingTrackerViewController, animated: true)
     }
     
     @objc private func didTapToIrregularEventButton() {
-        let creatingNewTrackerViewController = CreatingNewTrackerViewController(.irregularEvent)
-        creatingNewTrackerViewController.delegate = self
-        present(creatingNewTrackerViewController, animated: true)
+        let creatingTrackerViewController = CreatingTrackerViewController(.irregularEvent)
+        creatingTrackerViewController.delegate = self
+        present(creatingTrackerViewController, animated: true)
     }
 }
 // MARK: - CreationNewTrackerViewControllerDelegate
-extension SelectingNewTrackerViewController: CreatingNewTrackerViewControllerDelegate {
+extension SelectingTrackerViewController: CreatingTrackerViewControllerDelegate {
     func appendTrackerToTrackerCategory(_ trackerCategory: TrackerCategory) {
         self.delegate?.appendTrackerToTrackerCategory(trackerCategory)
     }

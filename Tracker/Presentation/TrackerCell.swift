@@ -1,5 +1,5 @@
 //
-//  TrackersCollectionViewCell.swift
+//  TrackerCell.swift
 //  Tracker
 //
 //  Created by Кирилл Арефьев on 15.04.2024.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class TrackersCollectionViewCell: UICollectionViewCell {
+final class TrackerCell: UICollectionViewCell {
     static let identifier = "trackerCell"
     // MARK: - Private Properties
     private lazy var colorView: UIView = {
