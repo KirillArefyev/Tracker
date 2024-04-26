@@ -285,7 +285,7 @@ extension CreatingTrackerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.row {
         case 0:
-            print("Переход к экрану создания и выбора категории")
+            print("➡️ Переход к экрану создания и выбора категории")
         case 1:
             let scheduleViewController = ScheduleViewController()
             scheduleViewController.delegate = self

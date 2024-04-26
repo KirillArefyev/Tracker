@@ -7,9 +7,20 @@
 
 import UIKit
 
+protocol TrackerCellDelegate: AnyObject {
+    func completeTracker(id: UUID, at indexPath: IndexPath)
+    func uncompliteTracker(id: UUID, at indexPath: IndexPath)
+}
+
 final class TrackerCell: UICollectionViewCell {
     static let identifier = "trackerCell"
+    
+    weak var delegate: TrackerCellDelegate?
     // MARK: - Private Properties
+    private var trackerIsCompleted: Bool = false
+    private var trackerId: UUID?
+    private var indexPath: IndexPath?
+    
     private lazy var colorView: UIView = {
         let view = UIView()
         view.backgroundColor = .orange
@@ -68,11 +79,20 @@ final class TrackerCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     // MARK: - Public Methods
-    func configurateCell(for tracker: Tracker) {
+    func configurateCell(for tracker: Tracker,
+                         trackerIsCompleted: Bool,
+                         completedDays: Int,
+                         at indexPath: IndexPath
+    ) {
+        self.trackerIsCompleted = trackerIsCompleted
+        self.trackerId = tracker.id
+        self.indexPath = indexPath
         colorView.backgroundColor = tracker.color
         emojiView.text = tracker.emoji
         nameView.text = tracker.name
         plusButton.backgroundColor = tracker.color
+        scheduleView.text = { changeDaysString(completedDays) }()
+        setupTrackerPlusButton()
     }
     // MARK: - Private Methods
     private func addSubviews() {
@@ -103,6 +123,7 @@ final class TrackerCell: UICollectionViewCell {
             
             scheduleView.centerYAnchor.constraint(equalTo: plusButton.centerYAnchor),
             scheduleView.leadingAnchor.constraint(equalTo: colorView.leadingAnchor, constant: 12),
+            scheduleView.trailingAnchor.constraint(equalTo: plusButton.leadingAnchor, constant: -8),
             
             plusButton.topAnchor.constraint(equalTo: colorView.bottomAnchor, constant: 8),
             plusButton.trailingAnchor.constraint(equalTo: colorView.trailingAnchor, constant: -12),
@@ -111,17 +132,42 @@ final class TrackerCell: UICollectionViewCell {
         ])
     }
     
-    @objc private func didTapTrackerPlusButton() {
-        // TODO: дописать логику отметки трекера выполненым
+    private func changeDaysString(_ count: Int) -> String {
+        let remainderOfTen = count % 10
+        let remainderOfHundred = count % 100
+        
+        if remainderOfTen == 1 && remainderOfHundred != 11 {
+            return "\(count) день"
+        } else if remainderOfTen >= 2 && remainderOfTen <= 4 && (remainderOfTen < 100 || remainderOfTen >= 20) {
+            return "\(count) дня"
+        } else {
+            return "\(count) дней"
+        }
+    }
+    
+    private func setupTrackerPlusButton() {
         let check = UIImage(systemName: "checkmark")?.applyingSymbolConfiguration(.init(pointSize: 12, weight: .heavy))
         let plus = UIImage(systemName: "plus")?.applyingSymbolConfiguration(.init(pointSize: 12, weight: .medium))
-        let isImageChanged = plusButton.imageView?.image != check
-        if isImageChanged {
+        if trackerIsCompleted {
             plusButton.setImage(check, for: .normal)
             plusButton.backgroundColor = colorView.backgroundColor?.withAlphaComponent(0.3)
         } else {
             plusButton.setImage(plus, for: .normal)
             plusButton.backgroundColor = colorView.backgroundColor
+        }
+    }
+    
+    @objc private func didTapTrackerPlusButton() {
+        // TODO: дописать логику отметки трекера выполненым
+        guard let trackerId = trackerId,
+              let indexPath = indexPath else {
+            assertionFailure("❌ no trackerId or indexPath")
+            return
+        }
+        if trackerIsCompleted {
+            delegate?.uncompliteTracker(id: trackerId, at: indexPath)
+        } else {
+            delegate?.completeTracker(id: trackerId, at: indexPath)
         }
     }
 }
