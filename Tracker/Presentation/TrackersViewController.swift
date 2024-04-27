@@ -10,7 +10,7 @@ import UIKit
 final class TrackersViewController: UIViewController {
     // MARK: - Private Properties
     private var categories: [TrackerCategory] = []
-    private var completedTrackers: [TrackerRecord] = []
+    private var completedTrackers: Set<TrackerRecord> = []
     private var currentDate = Date()
     private var visibleCategories: [TrackerCategory] = []
     
@@ -283,18 +283,16 @@ extension TrackersViewController: SelectingTrackerViewControllerDelegate {
 // MARK: - TrackerCellDelegate
 extension TrackersViewController: TrackerCellDelegate {
     func completeTracker(id: UUID, at indexPath: IndexPath) {
-        let selectedDay = datePicker.date
-        if selectedDay <= currentDate {
+        if datePicker.date <= currentDate {
             let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
-            completedTrackers.append(trackerRecord)
+            completedTrackers.insert(trackerRecord)
             trackersCollectionView.reloadItems(at: [indexPath])
         }
     }
     
     func uncompliteTracker(id: UUID, at indexPath: IndexPath) {
-        completedTrackers.removeAll { trackerRecord in
-            return trackerRecord.id == id && isSameDay(trackerRecord)
-        }
+        let removingTracker = TrackerRecord(id: id, date: datePicker.date)
+        completedTrackers.remove(removingTracker)
         trackersCollectionView.reloadItems(at: [indexPath])
     }
 }
