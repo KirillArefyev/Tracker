@@ -103,6 +103,7 @@ final class TrackersViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.showsVerticalScrollIndicator = false
+        collectionView.backgroundColor = .clear
         return collectionView
     }()
     // MARK: - Overrides Methods
@@ -152,22 +153,21 @@ final class TrackersViewController: UIViewController {
         }
     }
     
-    private func reloadVisibleCategories() {
+    private func checkVisibleCategories() {
+        var newCategories = categories.map { checkTrackerAtDayOfWeek($0) }
+        newCategories.removeAll { $0.trackers.isEmpty }
+        print(newCategories.isEmpty)
+        noTrackersStub.isHidden = !newCategories.isEmpty
+        visibleCategories = newCategories
+        trackersCollectionView.reloadData()
+    }
+    
+    private func checkTrackerAtDayOfWeek(_ trackerCategory: TrackerCategory) -> TrackerCategory {
         let calendar = Calendar.current
         let dayOfWeek = calendar.component(.weekday, from: datePicker.date)
-        visibleCategories = categories.compactMap { category in
-            let trackers = category.trackers.filter { tracker in
-                tracker.schedule.contains { day in
-                    day.rawValue == dayOfWeek
-                }
-            }
-            if trackers.isEmpty {
-                return nil
-            }
-            return TrackerCategory(name: category.name,
-                                   trackers: trackers)
-        }
-        trackersCollectionView.reloadData()
+        let trackers = trackerCategory.trackers.filter { $0.schedule.contains { $0.rawValue == dayOfWeek}}
+        let newCategory = TrackerCategory(name: trackerCategory.name, trackers: trackers)
+        return newCategory
     }
     
     @objc private func didTapToAddNewTracker() {
@@ -181,7 +181,7 @@ final class TrackersViewController: UIViewController {
             guard let self = self else { return }
             self.dismiss(animated: false)
         })
-        reloadVisibleCategories()
+        checkVisibleCategories()
     }
 }
 // MARK: - CollectionViewDataSource
@@ -277,7 +277,7 @@ extension TrackersViewController: SelectingTrackerViewControllerDelegate {
             let newCategory = TrackerCategory(name: trackerCategory.name, trackers: newTrackers)
             categories[categoryIndex] = newCategory
         }
-        trackersCollectionView.reloadData()
+        datePickerDateChanged()
     }
 }
 // MARK: - TrackerCellDelegate
