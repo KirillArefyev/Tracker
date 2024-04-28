@@ -296,7 +296,6 @@ extension TrackersViewController: TrackerCellDelegate {
         if currentDate <= Date() {
             let trackerRecord = TrackerRecord(id: id, date: currentDate)
             completedTrackers.insert(trackerRecord)
-            print(completedTrackers)
             trackersCollectionView.reloadItems(at: [indexPath])
         }
     }
@@ -304,7 +303,6 @@ extension TrackersViewController: TrackerCellDelegate {
     func uncompliteTracker(id: UUID, at indexPath: IndexPath) {
         let removingTracker = TrackerRecord(id: id, date: datePicker.date)
         completedTrackers.remove(removingTracker)
-        print(completedTrackers)
         trackersCollectionView.reloadItems(at: [indexPath])
     }
 }
