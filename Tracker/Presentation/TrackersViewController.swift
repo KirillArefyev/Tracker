@@ -89,6 +89,7 @@ final class TrackersViewController: UIViewController {
         searchField.hidesNavigationBarDuringPresentation = false
         searchField.searchBar.searchTextField.clearButtonMode = .whileEditing
         searchField.searchBar.setValue("Отменить", forKey: "cancelButtonText")
+        
         if let navBar = navigationController?.navigationItem.searchController?.searchBar {
             searchField.searchBar.resignFirstResponder()
         }
@@ -106,6 +107,7 @@ final class TrackersViewController: UIViewController {
         collectionView.backgroundColor = .clear
         return collectionView
     }()
+    
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -117,6 +119,7 @@ final class TrackersViewController: UIViewController {
                                                        для проверки добавления трекера закомментить строку */
         datePickerDateChanged()
     }
+    
     // MARK: - Private Methods
     private func addSubviews() {
         [noTrackersStub,
@@ -156,7 +159,6 @@ final class TrackersViewController: UIViewController {
     private func checkVisibleCategories() {
         var newCategories = categories.map { checkTrackerAtDayOfWeek($0) }
         newCategories.removeAll { $0.trackers.isEmpty }
-        print(newCategories.isEmpty)
         noTrackersStub.isHidden = !newCategories.isEmpty
         visibleCategories = newCategories
         trackersCollectionView.reloadData()
@@ -164,7 +166,7 @@ final class TrackersViewController: UIViewController {
     
     private func checkTrackerAtDayOfWeek(_ trackerCategory: TrackerCategory) -> TrackerCategory {
         let calendar = Calendar.current
-        let dayOfWeek = calendar.component(.weekday, from: datePicker.date)
+        let dayOfWeek = calendar.component(.weekday, from: currentDate)
         let trackers = trackerCategory.trackers.filter { $0.schedule.contains { $0.rawValue == dayOfWeek}}
         let newCategory = TrackerCategory(name: trackerCategory.name, trackers: trackers)
         return newCategory
@@ -181,9 +183,12 @@ final class TrackersViewController: UIViewController {
             guard let self = self else { return }
             self.dismiss(animated: false)
         })
+        
+        currentDate = datePicker.date
         checkVisibleCategories()
     }
 }
+
 // MARK: - CollectionViewDataSource
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -199,6 +204,7 @@ extension TrackersViewController: UICollectionViewDataSource {
             assertionFailure("❌ no cell")
             return UICollectionViewCell()
         }
+        
         let tracker = visibleCategories[indexPath.section].trackers[indexPath.row]
         cell.delegate = self
         let isCompleted = isTrackerCompleted(id: tracker.id)
@@ -211,6 +217,17 @@ extension TrackersViewController: UICollectionViewDataSource {
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderTrackersCollectionView.identifier, for: indexPath) as? HeaderTrackersCollectionView else {
+            assertionFailure("❌ no header")
+            return UICollectionReusableView()
+        }
+        
+        let categoryName = visibleCategories[indexPath.section].name
+        view.setTitleCategory(categoryName)
+        return view
+    }
+    
     private func isTrackerCompleted(id: UUID) -> Bool {
         completedTrackers.contains { trackerRecord in
             return trackerRecord.id == id && isSameDay(trackerRecord)
@@ -221,17 +238,8 @@ extension TrackersViewController: UICollectionViewDataSource {
         let isSameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
         return isSameDay
     }
-    
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderTrackersCollectionView.identifier, for: indexPath) as? HeaderTrackersCollectionView else {
-            assertionFailure("❌ no header")
-            return UICollectionReusableView()
-        }
-        let categoryName = visibleCategories[indexPath.section].name
-        view.setTitleCategory(categoryName)
-        return view
-    }
 }
+
 // MARK: - CollectionViewDelegate
 extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -259,6 +267,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
         return UIEdgeInsets(top: 12, left: 16, bottom: 16, right: 16)
     }
 }
+
 // MARK: - SelectingNewTrackerViewController
 extension TrackersViewController: SelectingTrackerViewControllerDelegate {
     func appendTrackerToTrackerCategory(_ trackerCategory: TrackerCategory) {
@@ -280,12 +289,14 @@ extension TrackersViewController: SelectingTrackerViewControllerDelegate {
         datePickerDateChanged()
     }
 }
+
 // MARK: - TrackerCellDelegate
 extension TrackersViewController: TrackerCellDelegate {
     func completeTracker(id: UUID, at indexPath: IndexPath) {
-        if datePicker.date <= currentDate {
-            let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
+        if currentDate <= Date() {
+            let trackerRecord = TrackerRecord(id: id, date: currentDate)
             completedTrackers.insert(trackerRecord)
+            print(completedTrackers)
             trackersCollectionView.reloadItems(at: [indexPath])
         }
     }
@@ -293,6 +304,7 @@ extension TrackersViewController: TrackerCellDelegate {
     func uncompliteTracker(id: UUID, at indexPath: IndexPath) {
         let removingTracker = TrackerRecord(id: id, date: datePicker.date)
         completedTrackers.remove(removingTracker)
+        print(completedTrackers)
         trackersCollectionView.reloadItems(at: [indexPath])
     }
 }

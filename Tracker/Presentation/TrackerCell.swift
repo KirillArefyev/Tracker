@@ -15,7 +15,9 @@ protocol TrackerCellDelegate: AnyObject {
 final class TrackerCell: UICollectionViewCell {
     static let identifier = "trackerCell"
     
+    // MARK: - Public Properties
     weak var delegate: TrackerCellDelegate?
+    
     // MARK: - Private Properties
     private var trackerIsCompleted: Bool = false
     private var trackerId: UUID?
@@ -68,6 +70,7 @@ final class TrackerCell: UICollectionViewCell {
         button.addTarget(self, action: #selector(didTapTrackerPlusButton), for: .touchUpInside)
         return button
     }()
+    
     // MARK: - Inits
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -78,6 +81,7 @@ final class TrackerCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     // MARK: - Public Methods
     func configurateCell(for tracker: Tracker,
                          trackerIsCompleted: Bool,
@@ -94,6 +98,7 @@ final class TrackerCell: UICollectionViewCell {
         scheduleView.text = { changeDaysString(completedDays) }()
         setupTrackerPlusButton()
     }
+    
     // MARK: - Private Methods
     private func addSubviews() {
         [colorView,
@@ -148,6 +153,7 @@ final class TrackerCell: UICollectionViewCell {
     private func setupTrackerPlusButton() {
         let check = UIImage(systemName: "checkmark")?.applyingSymbolConfiguration(.init(pointSize: 12, weight: .heavy))
         let plus = UIImage(systemName: "plus")?.applyingSymbolConfiguration(.init(pointSize: 12, weight: .medium))
+        
         if trackerIsCompleted {
             plusButton.setImage(check, for: .normal)
             plusButton.backgroundColor = colorView.backgroundColor?.withAlphaComponent(0.3)
@@ -158,12 +164,12 @@ final class TrackerCell: UICollectionViewCell {
     }
     
     @objc private func didTapTrackerPlusButton() {
-        // TODO: дописать логику отметки трекера выполненым
         guard let trackerId = trackerId,
               let indexPath = indexPath else {
             assertionFailure("❌ no trackerId or indexPath")
             return
         }
+        
         if trackerIsCompleted {
             delegate?.uncompliteTracker(id: trackerId, at: indexPath)
         } else {

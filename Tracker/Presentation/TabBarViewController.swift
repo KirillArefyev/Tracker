@@ -33,6 +33,7 @@ final class TabBarViewController: UITabBarController {
             title: "Трекеры",
             image: UIImage(systemName: "record.circle.fill"),
             selectedImage: nil)
+        
         statisticViewController.tabBarItem = UITabBarItem(
             title: "Статистика",
             image: UIImage(systemName: "hare.fill"),

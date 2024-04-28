@@ -12,7 +12,9 @@ protocol SelectingTrackerViewControllerDelegate: AnyObject {
 }
 
 final class SelectingTrackerViewController: UIViewController {
+    // MARK: - Public Properties
     weak var delegate: TrackersViewController?
+    
     // MARK: - Private Properties
     private lazy var textLabel: UILabel = {
         let label = UILabel()
@@ -41,6 +43,7 @@ final class SelectingTrackerViewController: UIViewController {
         stackView.axis = .vertical
         stackView.alignment = .center
         stackView.spacing = 16.0
+        
         [habitButton, irregularEventButton].forEach {
             $0.backgroundColor = .trBlack
             $0.setTitleColor(.trWhite, for: .normal)

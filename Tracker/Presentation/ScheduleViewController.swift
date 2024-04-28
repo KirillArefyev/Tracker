@@ -12,7 +12,9 @@ protocol ScheduleViewControllerDelegate: AnyObject {
 }
 
 final class ScheduleViewController: UIViewController {
+    // MARK: - Public Properties
     weak var delegate: ScheduleViewControllerDelegate?
+    
     // MARK: - Private Properties
     private var selectedDays: [WeekDay] = []
     private let weekDays = WeekDay.allCases
@@ -50,6 +52,7 @@ final class ScheduleViewController: UIViewController {
         button.isEnabled = false
         return button
     }()
+    
     // MARK: - Inits
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -58,6 +61,7 @@ final class ScheduleViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     // MARK: - Overriding Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,6 +69,7 @@ final class ScheduleViewController: UIViewController {
         addSubviews()
         applyConstraints()
     }
+    
     // MARK: - Private Methods
     private func addSubviews() {
         [textLabel,
@@ -99,6 +104,7 @@ final class ScheduleViewController: UIViewController {
         }
     }
 }
+
 // MARK: - TableViewDataSource
 extension ScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -139,6 +145,7 @@ extension ScheduleViewController: UITableViewDataSource {
         }
     }
 }
+
 // MARK: - TableViewDelegate
 extension ScheduleViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

@@ -24,8 +24,10 @@ final class CreatingTrackerViewController: UIViewController {
         .color7, .color8, .color9, .color10, .color11, .color12,
         .color13, .color14, .color15, .color16, .color17, .color18
     ]
+    
     // MARK: - Public Properties
     weak var delegate: SelectingTrackerViewController?
+    
     // MARK: - Private Properties
     private var typeTracker: TypeTracker
     private var trackerName: String = ""
@@ -125,6 +127,7 @@ final class CreatingTrackerViewController: UIViewController {
         // TODO: - добавить делегата и датасорс
         return collectionView
     }()
+    
     // MARK: - Inits
     init(_ typeTracker: TypeTracker) {
         self.typeTracker = typeTracker
@@ -134,6 +137,7 @@ final class CreatingTrackerViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     // MARK: - Overriding Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -142,6 +146,7 @@ final class CreatingTrackerViewController: UIViewController {
         applyConstraints()
         trackerSchedule = typeTracker.trackerSchedule
     }
+    
     // MARK: - Private Methods
     private func addSubviews() {
         [textLabel,
@@ -229,7 +234,6 @@ final class CreatingTrackerViewController: UIViewController {
     }
     
     @objc private func didTapCreateButton() {
-        // TODO: - создание трекера и возврат на главное вью
         dismiss(animated: true) { [weak self] in
             guard let self = self else { return }
             let trackerCategory = self.createCategory(with: self.newTracker)
@@ -237,6 +241,7 @@ final class CreatingTrackerViewController: UIViewController {
         }
     }
 }
+
 // MARK: - TableViewDataSource
 extension CreatingTrackerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -252,6 +257,7 @@ extension CreatingTrackerViewController: UITableViewDataSource {
         cell.detailTextLabel?.textColor = .trGray
         cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         cell.selectionStyle = .none
+        
         switch indexPath.row {
         case 0:
             cell.detailTextLabel?.text = trackerCategory // TODO: - позже подставлять значение из вью создания и выбора категории
@@ -264,6 +270,7 @@ extension CreatingTrackerViewController: UITableViewDataSource {
         default:
             break
         }
+        
         if indexPath.row == typeTracker.cellName.count - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
         }
@@ -276,6 +283,7 @@ extension CreatingTrackerViewController: UITableViewDataSource {
         return list
     }
 }
+
 // MARK: - TableViewDelegate
 extension CreatingTrackerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -295,6 +303,7 @@ extension CreatingTrackerViewController: UITableViewDelegate {
         }
     }
 }
+
 // MARK: - TextFieldDelegate
 extension CreatingTrackerViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -307,6 +316,7 @@ extension CreatingTrackerViewController: UITextFieldDelegate {
         return true
     }
 }
+
 // MARK: - ScheduleViewControllerDelegate
 extension CreatingTrackerViewController: ScheduleViewControllerDelegate {
     func createSchedule(_ selectedDays: [WeekDay]) {
