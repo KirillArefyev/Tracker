@@ -1,0 +1,43 @@
+//
+//  HeaderTrackersCollectionView.swift
+//  Tracker
+//
+//  Created by Кирилл Арефьев on 15.04.2024.
+//
+
+import UIKit
+
+final class HeaderTrackersCollectionView: UICollectionReusableView {
+    static let identifier = "header"
+    
+    private lazy var titleCategory: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 19, weight: .bold)
+        label.textColor = .trBlack
+        label.text = "Название категории"
+        label.textAlignment = .left
+        return label
+    }()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(titleCategory)
+        
+        titleCategory.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            titleCategory.topAnchor.constraint(equalTo: topAnchor),
+            titleCategory.bottomAnchor.constraint(equalTo: bottomAnchor),
+            titleCategory.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28)
+        ])
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setTitleCategory(_ categoryName: String) {
+        titleCategory.text = categoryName
+    }
+}
