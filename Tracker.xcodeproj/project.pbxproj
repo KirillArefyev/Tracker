@@ -24,6 +24,7 @@
 		ED8773A82BCC3BF60019D8A9 /* WeekDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8773A72BCC3BF60019D8A9 /* WeekDay.swift */; };
 		ED8773CA2BCDAE310019D8A9 /* TrackerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8773C92BCDAE310019D8A9 /* TrackerCell.swift */; };
 		ED8773CC2BCDB7AD0019D8A9 /* HeaderTrackersCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8773CB2BCDB7AD0019D8A9 /* HeaderTrackersCollectionView.swift */; };
+		EDB1C6A22BF2530E004C03FE /* EmojiAndColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB1C6A12BF2530E004C03FE /* EmojiAndColorCell.swift */; };
 		EDF78BF52BD1A6830037721F /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF78BF42BD1A6830037721F /* ScheduleViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -47,6 +48,7 @@
 		ED8773A72BCC3BF60019D8A9 /* WeekDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDay.swift; sourceTree = "<group>"; };
 		ED8773C92BCDAE310019D8A9 /* TrackerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCell.swift; sourceTree = "<group>"; };
 		ED8773CB2BCDB7AD0019D8A9 /* HeaderTrackersCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderTrackersCollectionView.swift; sourceTree = "<group>"; };
+		EDB1C6A12BF2530E004C03FE /* EmojiAndColorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiAndColorCell.swift; sourceTree = "<group>"; };
 		EDF78BF42BD1A6830037721F /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -131,6 +133,7 @@
 				EDF78BF42BD1A6830037721F /* ScheduleViewController.swift */,
 				ED8773A12BCAD91A0019D8A9 /* SelectingTrackerViewController.swift */,
 				ED3AB9B12BC3059D00E05D6D /* StatisticViewController.swift */,
+				EDB1C6A12BF2530E004C03FE /* EmojiAndColorCell.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -220,6 +223,7 @@
 				ED8773CC2BCDB7AD0019D8A9 /* HeaderTrackersCollectionView.swift in Sources */,
 				ED8773A82BCC3BF60019D8A9 /* WeekDay.swift in Sources */,
 				ED55A2A42BC8616100FF9A43 /* Tracker.swift in Sources */,
+				EDB1C6A22BF2530E004C03FE /* EmojiAndColorCell.swift in Sources */,
 				ED8773A42BCC11C70019D8A9 /* TypeTracker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

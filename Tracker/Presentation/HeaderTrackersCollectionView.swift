@@ -10,11 +10,11 @@ import UIKit
 final class HeaderTrackersCollectionView: UICollectionReusableView {
     static let identifier = "header"
     
-    private lazy var titleCategory: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 19, weight: .bold)
         label.textColor = .trBlack
-        label.text = "Название категории"
+        label.text = "Название"
         label.textAlignment = .left
         return label
     }()
@@ -22,14 +22,14 @@ final class HeaderTrackersCollectionView: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        addSubview(titleCategory)
+        addSubview(titleLabel)
         
-        titleCategory.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            titleCategory.topAnchor.constraint(equalTo: topAnchor),
-            titleCategory.bottomAnchor.constraint(equalTo: bottomAnchor),
-            titleCategory.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28)
+            titleLabel.topAnchor.constraint(equalTo: topAnchor),
+            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28)
         ])
     }
     
@@ -37,7 +37,7 @@ final class HeaderTrackersCollectionView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setTitleCategory(_ categoryName: String) {
-        titleCategory.text = categoryName
+    func setSectionTitle(_ title: String) {
+        titleLabel.text = title
     }
 }

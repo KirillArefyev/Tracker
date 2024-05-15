@@ -13,6 +13,8 @@ protocol CreatingTrackerViewControllerDelegate: AnyObject {
 
 final class CreatingTrackerViewController: UIViewController {
     // MARK: - Static Properties
+    static let sectionTitles: [String] = ["Emoji", "Цвет"]
+    
     static let emojis: [String] = [
         "🙂", "😻", "🌺", "🐶", "❤️", "😱",
         "😇", "😡", "🥶", "🤔", "🙌", "🍔",
@@ -40,6 +42,8 @@ final class CreatingTrackerViewController: UIViewController {
             tableView.reloadData()
         }
     }
+    
+    var selectedCellIndexPath: IndexPath? = nil
     
     private lazy var textLabel: UILabel = {
         let label = UILabel()
@@ -121,10 +125,12 @@ final class CreatingTrackerViewController: UIViewController {
     
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        collectionView.backgroundColor = .trWhite
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "collectionCell")
-        collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header")
-        // TODO: - добавить делегата и датасорс
+        collectionView.register(EmojiAndColorCell.self, forCellWithReuseIdentifier: EmojiAndColorCell.identifier)
+        collectionView.register(HeaderTrackersCollectionView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderTrackersCollectionView.identifier)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.allowsMultipleSelection = true
         return collectionView
     }()
     
@@ -300,6 +306,97 @@ extension CreatingTrackerViewController: UITableViewDelegate {
             present(scheduleViewController, animated: true)
         default:
             break
+        }
+    }
+}
+
+// MARK: - CollectionViewDataSource
+extension CreatingTrackerViewController: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return CreatingTrackerViewController.sectionTitles.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        switch section {
+        case 0:
+            return CreatingTrackerViewController.emojis.count
+        case 1:
+            return CreatingTrackerViewController.selectionColors.count
+        default:
+            return Int()
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EmojiAndColorCell.identifier, for: indexPath) as? EmojiAndColorCell else {
+            assertionFailure("❌ no cell")
+            return UICollectionViewCell()
+        }
+        
+        let section = indexPath.section
+        cell.configurate(for: section, with: indexPath)
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderTrackersCollectionView.identifier, for: indexPath) as? HeaderTrackersCollectionView else {
+            assertionFailure("❌ no header")
+            return UICollectionReusableView()
+        }
+        
+        let section = indexPath.section
+        let setTitle: () = view.setSectionTitle(CreatingTrackerViewController.sectionTitles[section])
+        switch section {
+        case 0:
+            setTitle
+        case 1:
+            setTitle
+        default:
+            break
+        }
+        return view
+    }
+}
+
+// MARK: - CollectionViewDelegate
+extension CreatingTrackerViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 52, height: 52)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        let spacing = CGFloat(collectionView.frame.width - 18 * 2 - 52 * 6) / 5
+        return spacing
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        let indexPath = IndexPath(row: 0, section: section)
+        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
+        return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width,
+                                                         height: UIView.layoutFittingCompressedSize.height),
+                                                  withHorizontalFittingPriority: .required,
+                                                  verticalFittingPriority: .fittingSizeLevel)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 12, left: 16, bottom: 16, right: 16)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCell {
+            let section = indexPath.section
+            cell.didSelect(for: section, with: indexPath)
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCell {
+            let section = indexPath.section
+            cell.didDeselect(for: section, with: indexPath)
         }
     }
 }

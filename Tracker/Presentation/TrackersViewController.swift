@@ -224,7 +224,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         }
         
         let categoryName = visibleCategories[indexPath.section].name
-        view.setTitleCategory(categoryName)
+        view.setSectionTitle(categoryName)
         return view
     }
     
