@@ -33,8 +33,8 @@ final class CreatingTrackerViewController: UIViewController {
     // MARK: - Private Properties
     private var typeTracker: TypeTracker
     private var trackerName: String = ""
-    private var trackerColor: UIColor = { selectionColors.randomElement() ?? .yellow }()
-    private var trackerEmoji: String = { emojis.randomElement() ?? "" }()
+    private var trackerColor: UIColor = .clear
+    private var trackerEmoji: String = ""
     private var trackerCategory: String = "Какая-то категория"
     private var trackerSchedule: [WeekDay] = []
     private var scheduleForTable: String = "" {
@@ -43,7 +43,7 @@ final class CreatingTrackerViewController: UIViewController {
         }
     }
     
-    var selectedCellIndexPath: IndexPath? = nil
+    var selectedCellIndexPath: IndexPath? = nil // свойство для хранения позиции выбранной ячейки
     
     private lazy var textLabel: UILabel = {
         let label = UILabel()
@@ -201,15 +201,20 @@ final class CreatingTrackerViewController: UIViewController {
         createButton.backgroundColor = .trBlack
     }
     
+    private func deactivationCreateButton() {
+        createButton.isEnabled = false
+        createButton.backgroundColor = .trGray
+    }
+    
     private func validationOfRequiredValues() {
         if (trackerName != "" &&
             trackerCategory.isEmpty != true &&
             trackerSchedule.isEmpty != true &&
-            trackerColor != nil &&
-            trackerEmoji != nil) {
+            trackerColor != UIColor.clear &&
+            trackerEmoji != "") {
             activationCreateButton()
         } else {
-            return
+            deactivationCreateButton()
         }
     }
     
@@ -333,8 +338,7 @@ extension CreatingTrackerViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        let section = indexPath.section
-        cell.configurate(for: section, with: indexPath)
+        cell.configurate(at: indexPath)
         return cell
     }
     
@@ -344,9 +348,8 @@ extension CreatingTrackerViewController: UICollectionViewDataSource {
             return UICollectionReusableView()
         }
         
-        let section = indexPath.section
-        let setTitle: () = view.setSectionTitle(CreatingTrackerViewController.sectionTitles[section])
-        switch section {
+        let setTitle: () = view.setSectionTitle(CreatingTrackerViewController.sectionTitles[indexPath.section])
+        switch indexPath.section {
         case 0:
             setTitle
         case 1:
@@ -388,15 +391,39 @@ extension CreatingTrackerViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let cell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCell {
-            let section = indexPath.section
-            cell.didSelect(for: section, with: indexPath)
+            cell.didSelect(at: indexPath)
+            setTrackerEmojiAndColor(at: indexPath)
+            validationOfRequiredValues()
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         if let cell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCell {
-            let section = indexPath.section
-            cell.didDeselect(for: section, with: indexPath)
+            cell.didDeselect(at: indexPath)
+            removeTrackerEmojiAndColor(at: indexPath)
+            validationOfRequiredValues()
+        }
+    }
+    
+    private func setTrackerEmojiAndColor(at indexPath: IndexPath) {
+        switch indexPath.section {
+        case 0:
+            trackerEmoji = CreatingTrackerViewController.emojis[indexPath.item]
+        case 1:
+            trackerColor = CreatingTrackerViewController.selectionColors[indexPath.item]
+        default:
+            break
+        }
+    }
+    
+    private func removeTrackerEmojiAndColor(at indexPath: IndexPath) {
+        switch indexPath.section {
+        case 0:
+            trackerEmoji = ""
+        case 1:
+            trackerColor = UIColor.clear
+        default:
+            break
         }
     }
 }

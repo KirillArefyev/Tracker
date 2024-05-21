@@ -115,8 +115,8 @@ final class TrackersViewController: UIViewController {
         setupNavBar()
         addSubviews()
         applyConstraints()
-        categories = CategoriesMock.shared.categories /* моки для проверки фильтра
-                                                       для проверки добавления трекера закомментить строку */
+//        categories = CategoriesMock.shared.categories /* моки для проверки фильтра
+//                                                       для проверки добавления трекера закомментить строку */
         datePickerDateChanged()
     }
     

@@ -38,8 +38,8 @@ final class EmojiAndColorCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configurate(for section: Int, with indexPath: IndexPath) {
-        switch section {
+    func configurate(at indexPath: IndexPath) {
+        switch indexPath.section {
         case 0:
             cellView.text = CreatingTrackerViewController.emojis[indexPath.item]
         case 1:
@@ -49,14 +49,14 @@ final class EmojiAndColorCell: UICollectionViewCell {
         }
     }
     
-    func didSelect(for section: Int, with indexPath: IndexPath) {
-        switch section {
+    func didSelect(at indexPath: IndexPath) {
+        switch  indexPath.section {
         case 0:
             contentView.backgroundColor = .trLightGray
             contentView.layer.cornerRadius = 16
             contentView.layer.masksToBounds = true
         case 1:
-            contentView.layer.borderColor = CreatingTrackerViewController.selectionColors[indexPath.item].withAlphaComponent(0.3).cgColor
+            contentView.layer.borderColor = cellView.backgroundColor?.withAlphaComponent(0.3).cgColor
             contentView.layer.borderWidth = 3
             contentView.layer.cornerRadius = 12
             contentView.layer.masksToBounds = true
@@ -65,8 +65,8 @@ final class EmojiAndColorCell: UICollectionViewCell {
         }
     }
     
-    func didDeselect(for section: Int, with indexPath: IndexPath) {
-        switch section {
+    func didDeselect(at indexPath: IndexPath) {
+        switch indexPath.section {
         case 0:
             contentView.backgroundColor = .clear
         case 1:
