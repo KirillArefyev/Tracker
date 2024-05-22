@@ -390,10 +390,21 @@ extension CreatingTrackerViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let cell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCell {
-            cell.didSelect(at: indexPath)
-            setTrackerEmojiAndColor(at: indexPath)
-            validationOfRequiredValues()
+        if selectedCellIndexPath == nil {
+            if let cell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCell {
+                cell.didSelect(at: indexPath)
+                selectedCellIndexPath = indexPath
+                setTrackerEmojiAndColor(at: indexPath)
+            }
+        } else {
+            if let selectedCellIndexPath = selectedCellIndexPath,
+               let oldCell = collectionView.cellForItem(at: selectedCellIndexPath) as? EmojiAndColorCell,
+               let newCell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCell {
+                oldCell.didDeselect(at: selectedCellIndexPath)
+                newCell.didSelect(at: indexPath)
+                setTrackerEmojiAndColor(at: indexPath)
+                self.selectedCellIndexPath = indexPath
+            }
         }
     }
     
@@ -401,7 +412,6 @@ extension CreatingTrackerViewController: UICollectionViewDelegateFlowLayout {
         if let cell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCell {
             cell.didDeselect(at: indexPath)
             removeTrackerEmojiAndColor(at: indexPath)
-            validationOfRequiredValues()
         }
     }
     
@@ -414,6 +424,7 @@ extension CreatingTrackerViewController: UICollectionViewDelegateFlowLayout {
         default:
             break
         }
+        validationOfRequiredValues()
     }
     
     private func removeTrackerEmojiAndColor(at indexPath: IndexPath) {
@@ -425,6 +436,7 @@ extension CreatingTrackerViewController: UICollectionViewDelegateFlowLayout {
         default:
             break
         }
+        validationOfRequiredValues()
     }
 }
 
