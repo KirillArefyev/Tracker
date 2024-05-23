@@ -12,21 +12,6 @@ protocol CreatingTrackerViewControllerDelegate: AnyObject {
 }
 
 final class CreatingTrackerViewController: UIViewController {
-    // MARK: - Static Properties
-    static let sectionTitles: [String] = ["Emoji", "Цвет"]
-    
-    static let emojis: [String] = [
-        "🙂", "😻", "🌺", "🐶", "❤️", "😱",
-        "😇", "😡", "🥶", "🤔", "🙌", "🍔",
-        "🥦", "🏓", "🥇", "🎸", "🏝", "😪"
-    ]
-    
-    static let selectionColors: [UIColor] = [
-        .color1, .color2, .color3, .color4, .color5, .color6,
-        .color7, .color8, .color9, .color10, .color11, .color12,
-        .color13, .color14, .color15, .color16, .color17, .color18
-    ]
-    
     // MARK: - Public Properties
     weak var delegate: SelectingTrackerViewController?
     
@@ -42,8 +27,8 @@ final class CreatingTrackerViewController: UIViewController {
             tableView.reloadData()
         }
     }
-    
-    var selectedCellIndexPath: IndexPath? = nil // свойство для хранения позиции выбранной ячейки
+    private var emojiIndexPath: IndexPath? = nil
+    private var colorIndexPath: IndexPath? = nil
     
     private lazy var textLabel: UILabel = {
         let label = UILabel()
@@ -318,15 +303,15 @@ extension CreatingTrackerViewController: UITableViewDelegate {
 // MARK: - CollectionViewDataSource
 extension CreatingTrackerViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return CreatingTrackerViewController.sectionTitles.count
+        return HelperData.sectionTitles.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return CreatingTrackerViewController.emojis.count
+            return HelperData.emojis.count
         case 1:
-            return CreatingTrackerViewController.selectionColors.count
+            return HelperData.selectionColors.count
         default:
             return Int()
         }
@@ -348,7 +333,7 @@ extension CreatingTrackerViewController: UICollectionViewDataSource {
             return UICollectionReusableView()
         }
         
-        let setTitle: () = view.setSectionTitle(CreatingTrackerViewController.sectionTitles[indexPath.section])
+        let setTitle: () = view.setSectionTitle(HelperData.sectionTitles[indexPath.section])
         switch indexPath.section {
         case 0:
             setTitle
@@ -390,20 +375,14 @@ extension CreatingTrackerViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if selectedCellIndexPath == nil {
-            if let cell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCell {
-                cell.didSelect(at: indexPath)
-                selectedCellIndexPath = indexPath
-                setTrackerEmojiAndColor(at: indexPath)
-            }
-        } else {
-            if let selectedCellIndexPath = selectedCellIndexPath,
-               let oldCell = collectionView.cellForItem(at: selectedCellIndexPath) as? EmojiAndColorCell,
-               let newCell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCell {
-                oldCell.didDeselect(at: selectedCellIndexPath)
-                newCell.didSelect(at: indexPath)
-                setTrackerEmojiAndColor(at: indexPath)
-                self.selectedCellIndexPath = indexPath
+        if let cell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCell {
+            switch indexPath.section {
+            case 0:
+                selectCellInSection(in: collectionView, where: cell, currentIndexPath: indexPath, selectedCellIndexPath: &emojiIndexPath)
+            case 1:
+                selectCellInSection(in: collectionView, where: cell, currentIndexPath: indexPath, selectedCellIndexPath: &colorIndexPath)
+            default:
+                break
             }
         }
     }
@@ -415,12 +394,28 @@ extension CreatingTrackerViewController: UICollectionViewDelegateFlowLayout {
         }
     }
     
+    private func selectCellInSection(in collectionView: UICollectionView, where cell: EmojiAndColorCell, currentIndexPath indexPath: IndexPath, selectedCellIndexPath emojiOrColorCellIndexPath: inout IndexPath?) {
+        if emojiOrColorCellIndexPath == nil {
+            cell.didSelect(at: indexPath)
+            emojiOrColorCellIndexPath = indexPath
+            setTrackerEmojiAndColor(at: indexPath)
+        } else {
+            if let oldCell = collectionView.cellForItem(at: emojiOrColorCellIndexPath ?? IndexPath()) as? EmojiAndColorCell {
+                oldCell.didDeselect(at: indexPath)
+                emojiOrColorCellIndexPath = nil
+                cell.didSelect(at: indexPath)
+                emojiOrColorCellIndexPath = indexPath
+                setTrackerEmojiAndColor(at: indexPath)
+            }
+        }
+    }
+    
     private func setTrackerEmojiAndColor(at indexPath: IndexPath) {
         switch indexPath.section {
         case 0:
-            trackerEmoji = CreatingTrackerViewController.emojis[indexPath.item]
+            trackerEmoji = HelperData.emojis[indexPath.item]
         case 1:
-            trackerColor = CreatingTrackerViewController.selectionColors[indexPath.item]
+            trackerColor = HelperData.selectionColors[indexPath.item]
         default:
             break
         }

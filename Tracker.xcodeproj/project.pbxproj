@@ -10,6 +10,7 @@
 		ED3AB9AE2BC2EB9200E05D6D /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED3AB9AD2BC2EB9200E05D6D /* UIColor+Extension.swift */; };
 		ED3AB9B02BC3056400E05D6D /* TrackersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED3AB9AF2BC3056400E05D6D /* TrackersViewController.swift */; };
 		ED3AB9B22BC3059D00E05D6D /* StatisticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED3AB9B12BC3059D00E05D6D /* StatisticViewController.swift */; };
+		ED4B3FF82BFFB24100B8C261 /* HelperData.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4B3FF72BFFB24100B8C261 /* HelperData.swift */; };
 		ED4E7E812BC17104007FF954 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4E7E802BC17104007FF954 /* AppDelegate.swift */; };
 		ED4E7E852BC17104007FF954 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4E7E842BC17104007FF954 /* TabBarViewController.swift */; };
 		ED4E7E8A2BC17105007FF954 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ED4E7E892BC17105007FF954 /* Assets.xcassets */; };
@@ -32,6 +33,7 @@
 		ED3AB9AD2BC2EB9200E05D6D /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		ED3AB9AF2BC3056400E05D6D /* TrackersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersViewController.swift; sourceTree = "<group>"; };
 		ED3AB9B12BC3059D00E05D6D /* StatisticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticViewController.swift; sourceTree = "<group>"; };
+		ED4B3FF72BFFB24100B8C261 /* HelperData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperData.swift; sourceTree = "<group>"; };
 		ED4E7E7D2BC17104007FF954 /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED4E7E802BC17104007FF954 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		ED4E7E842BC17104007FF954 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
@@ -78,6 +80,7 @@
 			children = (
 				ED87739D2BC99A170019D8A9 /* Date+Extension.swift */,
 				ED3AB9AD2BC2EB9200E05D6D /* UIColor+Extension.swift */,
+				ED4B3FF72BFFB24100B8C261 /* HelperData.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -225,6 +228,7 @@
 				ED55A2A42BC8616100FF9A43 /* Tracker.swift in Sources */,
 				EDB1C6A22BF2530E004C03FE /* EmojiAndColorCell.swift in Sources */,
 				ED8773A42BCC11C70019D8A9 /* TypeTracker.swift in Sources */,
+				ED4B3FF82BFFB24100B8C261 /* HelperData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

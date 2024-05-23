@@ -41,9 +41,9 @@ final class EmojiAndColorCell: UICollectionViewCell {
     func configurate(at indexPath: IndexPath) {
         switch indexPath.section {
         case 0:
-            cellView.text = CreatingTrackerViewController.emojis[indexPath.item]
+            cellView.text = HelperData.emojis[indexPath.item]
         case 1:
-            cellView.backgroundColor = CreatingTrackerViewController.selectionColors[indexPath.item]
+            cellView.backgroundColor = HelperData.selectionColors[indexPath.item]
         default:
             break
         }
