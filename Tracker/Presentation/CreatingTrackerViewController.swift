@@ -378,9 +378,15 @@ extension CreatingTrackerViewController: UICollectionViewDelegateFlowLayout {
         if let cell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCell {
             switch indexPath.section {
             case 0:
-                selectCellInSection(in: collectionView, where: cell, currentIndexPath: indexPath, selectedCellIndexPath: &emojiIndexPath)
+                selectCellInSection(in: collectionView,
+                                    where: cell,
+                                    currentIndexPath: indexPath,
+                                    selectedCellIndexPath: &emojiIndexPath)
             case 1:
-                selectCellInSection(in: collectionView, where: cell, currentIndexPath: indexPath, selectedCellIndexPath: &colorIndexPath)
+                selectCellInSection(in: collectionView,
+                                    where: cell,
+                                    currentIndexPath: indexPath,
+                                    selectedCellIndexPath: &colorIndexPath)
             default:
                 break
             }
@@ -394,7 +400,11 @@ extension CreatingTrackerViewController: UICollectionViewDelegateFlowLayout {
         }
     }
     
-    private func selectCellInSection(in collectionView: UICollectionView, where cell: EmojiAndColorCell, currentIndexPath indexPath: IndexPath, selectedCellIndexPath emojiOrColorCellIndexPath: inout IndexPath?) {
+    private func selectCellInSection(in collectionView: UICollectionView,
+                                     where cell: EmojiAndColorCell,
+                                     currentIndexPath indexPath: IndexPath,
+                                     selectedCellIndexPath emojiOrColorCellIndexPath: inout IndexPath?
+    ) {
         if emojiOrColorCellIndexPath == nil {
             cell.didSelect(at: indexPath)
             emojiOrColorCellIndexPath = indexPath
