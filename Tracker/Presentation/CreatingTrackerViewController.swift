@@ -102,7 +102,7 @@ final class CreatingTrackerViewController: UIViewController {
             $0.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
             $0.layer.cornerRadius = 16
             $0.layer.masksToBounds = true
-            
+            $0.translatesAutoresizingMaskIntoConstraints = false
             stackView.addArrangedSubview($0)
         }
         return stackView
@@ -116,7 +116,18 @@ final class CreatingTrackerViewController: UIViewController {
         collectionView.delegate = self
         collectionView.showsVerticalScrollIndicator = false
         collectionView.allowsMultipleSelection = true
+        collectionView.backgroundColor = .clear
+        collectionView.isScrollEnabled = false
         return collectionView
+    }()
+    
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.backgroundColor = .clear
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.contentInset.top = 24
+        scrollView.contentOffset.y = -38
+        return scrollView
     }()
     
     // MARK: - Inits
@@ -140,11 +151,16 @@ final class CreatingTrackerViewController: UIViewController {
     
     // MARK: - Private Methods
     private func addSubviews() {
-        [textLabel,
-         nameTextField,
+        [nameTextField,
          tableView,
          collectionView,
-         buttonStack].forEach { view.addSubview($0)
+         buttonStack].forEach {
+            scrollView.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        [textLabel,
+         scrollView].forEach { view.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
     }
@@ -154,31 +170,32 @@ final class CreatingTrackerViewController: UIViewController {
             textLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             textLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
             
-            nameTextField.topAnchor.constraint(equalTo: textLabel.bottomAnchor, constant: 38),
-            nameTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            nameTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            scrollView.topAnchor.constraint(equalTo: textLabel.bottomAnchor, constant: 14),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            nameTextField.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+            nameTextField.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16),
             nameTextField.heightAnchor.constraint(equalToConstant: 75),
             
-            tableView.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 24 ),
+            tableView.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 24),
             tableView.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: nameTextField.trailingAnchor),
             tableView.heightAnchor.constraint(equalToConstant: typeTracker.heightTable),
             
             collectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 32),
-            collectionView.bottomAnchor.constraint(equalTo: buttonStack.topAnchor, constant: -16),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.heightAnchor.constraint(equalToConstant: 422),
+            collectionView.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor),
             
-            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            buttonStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            buttonStack.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 16),
+            buttonStack.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 20),
+            buttonStack.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -20),
+            buttonStack.heightAnchor.constraint(equalToConstant: 60)
         ])
         
-        [cancelButton, createButton].forEach {
-            NSLayoutConstraint.activate([
-                $0.heightAnchor.constraint(equalToConstant: 60)
-            ])
-        }
+        scrollView.contentSize = CGSize(width: scrollView.frame.width, height: view.bounds.height)
     }
     
     private func activationCreateButton() {
