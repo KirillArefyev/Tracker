@@ -291,7 +291,7 @@ extension CreatingTrackerViewController: UITableViewDataSource {
     }
     
     private func convertScheduleToString(_ sellectedDays: [WeekDay]) -> String {
-        let newSchedule = sellectedDays.map { $0.shortName }
+        let newSchedule = sellectedDays.map { $0.shortName.1 }
         let list = newSchedule.joined(separator: ", ")
         return list
     }

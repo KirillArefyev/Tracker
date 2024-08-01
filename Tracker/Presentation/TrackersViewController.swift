@@ -13,6 +13,8 @@ final class TrackersViewController: UIViewController {
     private var completedTrackers: Set<TrackerRecord> = []
     private var currentDate = Date()
     private var visibleCategories: [TrackerCategory] = []
+    private let trackerCategoryStore = TrackerCategoryStore()
+    private let trackerRecordStore = TrackerRecordStore()
     
     private lazy var noTrackersImage: UIImageView = {
         let imageView = UIImageView()
@@ -157,6 +159,7 @@ final class TrackersViewController: UIViewController {
     }
     
     private func checkVisibleCategories() {
+        categories = trackerCategoryStore.categories
         var newCategories = categories.map { checkTrackerAtDayOfWeek($0) }
         newCategories.removeAll { $0.trackers.isEmpty }
         noTrackersStub.isHidden = !newCategories.isEmpty
@@ -272,6 +275,8 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 extension TrackersViewController: SelectingTrackerViewControllerDelegate {
     func appendTrackerToTrackerCategory(_ trackerCategory: TrackerCategory) {
         dismiss(animated: true)
+        if let tracker = trackerCategory.trackers.first {
+            try? trackerCategoryStore.createCategory(with: tracker, and: trackerCategory.name) }
         var newCategories = categories
         if !newCategories.contains(where: { $0.name == trackerCategory.name }) {
             newCategories.append(trackerCategory)

@@ -99,7 +99,7 @@ final class ScheduleViewController: UIViewController {
     @objc private func didTapReadyButton() {
         dismiss(animated: true) { [weak self] in
             guard let self = self else { return }
-            let sortedDays = self.selectedDays.sorted { $0.rawValue < $1.rawValue }
+            let sortedDays = self.selectedDays.sorted { $0.shortName.0 < $1.shortName.0 }
             self.delegate?.createSchedule(sortedDays)
         }
     }

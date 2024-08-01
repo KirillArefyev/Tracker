@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum WeekDay: Int, CaseIterable {
+enum WeekDay: Int, CaseIterable, Codable {
     case monday = 2, tuesday = 3, wednesday = 4, thursday = 5, friday = 6, saturday = 7, sunday = 1
     
     var fullName: String {
@@ -29,22 +29,22 @@ enum WeekDay: Int, CaseIterable {
         }
     }
     
-    var shortName: String {
+    var shortName: (Int,String) {
         switch self {
         case .monday:
-            return "Пн"
+            return (1, "Пн")
         case .tuesday:
-            return "Вт"
+            return (2, "Вт")
         case .wednesday:
-            return "Ср"
+            return (3, "Ср")
         case .thursday:
-            return "Чт"
+            return (4, "Чт")
         case .friday:
-            return "Пт"
+            return (5, "Пт")
         case .saturday:
-            return "Сб"
+            return (6, "Сб")
         case .sunday:
-            return "Вс"
+            return (7, "Вс")
         }
     }
 }
