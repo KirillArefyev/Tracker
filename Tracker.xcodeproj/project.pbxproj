@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		ED0543B12C2BF89000EE597F /* WeekDayMarshalling.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED0543B02C2BF89000EE597F /* WeekDayMarshalling.swift */; };
-		ED0543B32C2BF91600EE597F /* UIColorMarshalling.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED0543B22C2BF91600EE597F /* UIColorMarshalling.swift */; };
 		ED3AB9AE2BC2EB9200E05D6D /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED3AB9AD2BC2EB9200E05D6D /* UIColor+Extension.swift */; };
 		ED3AB9B02BC3056400E05D6D /* TrackersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED3AB9AF2BC3056400E05D6D /* TrackersViewController.swift */; };
 		ED3AB9B22BC3059D00E05D6D /* StatisticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED3AB9B12BC3059D00E05D6D /* StatisticViewController.swift */; };
@@ -40,8 +38,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		ED0543B02C2BF89000EE597F /* WeekDayMarshalling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDayMarshalling.swift; sourceTree = "<group>"; };
-		ED0543B22C2BF91600EE597F /* UIColorMarshalling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorMarshalling.swift; sourceTree = "<group>"; };
 		ED3AB9AD2BC2EB9200E05D6D /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		ED3AB9AF2BC3056400E05D6D /* TrackersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersViewController.swift; sourceTree = "<group>"; };
 		ED3AB9B12BC3059D00E05D6D /* StatisticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticViewController.swift; sourceTree = "<group>"; };
@@ -114,8 +110,6 @@
 				ED72CE102C19D32700A52C98 /* TrackerStore.swift */,
 				ED72CE122C19D40B00A52C98 /* TrackerCategoryStore.swift */,
 				ED72CE142C19D45000A52C98 /* TrackerRecordStore.swift */,
-				ED0543B02C2BF89000EE597F /* WeekDayMarshalling.swift */,
-				ED0543B22C2BF91600EE597F /* UIColorMarshalling.swift */,
 				ED67AB642C5BCED000EDDA45 /* UIColorValueTransformer.swift */,
 				ED67AB622C5BA6AB00EDDA45 /* WeekDaysValueTransformer.swift */,
 			);
@@ -257,11 +251,9 @@
 				ED67AB652C5BCED000EDDA45 /* UIColorValueTransformer.swift in Sources */,
 				ED8773CA2BCDAE310019D8A9 /* TrackerCell.swift in Sources */,
 				ED55A2A62BC8617E00FF9A43 /* TrackerCategory.swift in Sources */,
-				ED0543B12C2BF89000EE597F /* WeekDayMarshalling.swift in Sources */,
 				ED3AB9B02BC3056400E05D6D /* TrackersViewController.swift in Sources */,
 				ED8773A22BCAD91A0019D8A9 /* SelectingTrackerViewController.swift in Sources */,
 				ED3AB9B22BC3059D00E05D6D /* StatisticViewController.swift in Sources */,
-				ED0543B32C2BF91600EE597F /* UIColorMarshalling.swift in Sources */,
 				ED4B3FFC2C0DF81700B8C261 /* TrackerModel.xcdatamodeld in Sources */,
 				ED87739E2BC99A170019D8A9 /* Date+Extension.swift in Sources */,
 				ED55A2A82BC861A300FF9A43 /* TrackerRecord.swift in Sources */,

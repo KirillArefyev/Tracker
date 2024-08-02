@@ -20,8 +20,6 @@ final class TrackerStore: NSObject {
     
     // MARK: - Private Properties
     private let context: NSManagedObjectContext
-//    private let uiColorMarshalling = UIColorMarshalling()
-//    private let weekDayMarshalling = WeekDayMarshalling()
     private var insertedIndexes: IndexSet?
     private var deletedIndexes: IndexSet?
     private var updatedIndexes: IndexSet?
