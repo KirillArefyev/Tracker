@@ -11,11 +11,14 @@ import UIKit
 final class TrackerRecordStore: NSObject {
     // MARK: - Public Properties
     var records: Set<TrackerRecord> {
-        guard
-            let object = fetchedResultsController.fetchedObjects,
-            let records = try? object.map({ try readTrackerRecord(from: $0) })
-        else { return [] }
-        let recordsSet = Set(records)
+        let fetchRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        guard let objects = try? context.fetch(fetchRequest) else { return [] }
+        var recordsSet: Set<TrackerRecord> = []
+        
+        for object in objects {
+            guard let record = try? readTrackerRecord(from: object) else { return [] }
+            recordsSet.insert(record)
+        }
         return recordsSet
     }
     
@@ -51,23 +54,24 @@ final class TrackerRecordStore: NSObject {
     }
     
     // MARK: - Public Methods
-    func createTrackerRecord(from record: TrackerRecord) throws {
+    func createTrackerRecord(with id: UUID, at date: Date) throws {
         let trackerRecordCoreData = TrackerRecordCoreData(context: context)
-        trackerRecordCoreData.recordID = record.id
-        trackerRecordCoreData.date = record.date
+        trackerRecordCoreData.trackerID = id
+        trackerRecordCoreData.date = date
+        trackerRecordCoreData.tracker = try trackerStore.fetchTracker(with: id)
         saveContext()
     }
     
     func readTrackerRecord(from trackerRecordCoreData: TrackerRecordCoreData) throws -> TrackerRecord {
-        guard let id = trackerRecordCoreData.recordID else { throw StoreErrors.decodingErrorInvalidTrackerRecordID }
+        guard let id = trackerRecordCoreData.trackerID else { throw StoreErrors.decodingErrorInvalidTrackerRecordID }
         guard let date = trackerRecordCoreData.date else { throw StoreErrors.decodingErrorInvalidTrackerRecordDate }
         let record = TrackerRecord(id: id, date: date)
         return record
     }
     
-    func deleteTrackerRecord(with id: UUID) throws {
-        let fetchRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
-        fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerRecordCoreData.recordID), id.uuidString)
+    func deleteTrackerRecord(with id: UUID, at date: Date) throws {
+        let fetchRequest = fetchedResultsController.fetchRequest
+        fetchRequest.predicate = NSPredicate(format: "%K == %@ AND %K == %@", #keyPath(TrackerRecordCoreData.trackerID), id.uuidString, #keyPath(TrackerRecordCoreData.date), date as CVarArg)
         let recordsCoreData = try context.fetch(fetchRequest)
         
         if let record = recordsCoreData.first {

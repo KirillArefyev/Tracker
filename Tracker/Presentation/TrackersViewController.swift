@@ -168,9 +168,13 @@ final class TrackersViewController: UIViewController {
     private func checkTrackerAtDayOfWeek(_ trackerCategory: TrackerCategory) -> TrackerCategory {
         let calendar = Calendar.current
         let dayOfWeek = calendar.component(.weekday, from: currentDate)
-        let trackers = trackerCategory.trackers.filter { $0.schedule.contains { $0.rawValue == dayOfWeek}}
+        let trackers = trackerCategory.trackers.filter { $0.schedule.contains { $0.rawValue == dayOfWeek } }
         let newCategory = TrackerCategory(name: trackerCategory.name, trackers: trackers)
         return newCategory
+    }
+    
+    private func updateCompletedTrackers() {
+        completedTrackers = trackerRecordStore.records
     }
     
     @objc private func didTapToAddNewTracker() {
@@ -187,6 +191,7 @@ final class TrackersViewController: UIViewController {
         
         currentDate = datePicker.date
         checkVisibleCategories()
+        updateCompletedTrackers()
     }
 }
 
@@ -274,20 +279,11 @@ extension TrackersViewController: SelectingTrackerViewControllerDelegate {
     func appendTrackerToTrackerCategory(_ trackerCategory: TrackerCategory) {
         dismiss(animated: true)
         if let tracker = trackerCategory.trackers.first {
-            try? trackerCategoryStore.createCategory(with: tracker, and: trackerCategory.name) }
-        var newCategories = categories
-        if !newCategories.contains(where: { $0.name == trackerCategory.name }) {
-            newCategories.append(trackerCategory)
-            categories = newCategories
-        } else {
-            guard let categoryIndex = newCategories.firstIndex(where: { $0.name == trackerCategory.name }) else {
-                assertionFailure("❌ no index for category")
-                return
+            do {
+                try trackerCategoryStore.createCategory(with: tracker, and: trackerCategory.name)
+            } catch {
+                assertionFailure("❌ Failure to create a TrackerCategory at CoreData")
             }
-            let oldTrackers = categories[categoryIndex].trackers
-            let newTrackers = oldTrackers + trackerCategory.trackers
-            let newCategory = TrackerCategory(name: trackerCategory.name, trackers: newTrackers)
-            categories[categoryIndex] = newCategory
         }
         datePickerDateChanged()
     }
@@ -297,15 +293,25 @@ extension TrackersViewController: SelectingTrackerViewControllerDelegate {
 extension TrackersViewController: TrackerCellDelegate {
     func completeTracker(id: UUID, at indexPath: IndexPath) {
         if currentDate <= Date() {
-            let trackerRecord = TrackerRecord(id: id, date: currentDate)
-            completedTrackers.insert(trackerRecord)
+            let date = currentDate.makeShortDate()
+            do {
+                try trackerRecordStore.createTrackerRecord(with: id, at: date)
+            } catch {
+                assertionFailure("❌ Failure to create a TrackerRecord at CoreData")
+            }
+            updateCompletedTrackers()
             trackersCollectionView.reloadItems(at: [indexPath])
         }
     }
     
     func uncompliteTracker(id: UUID, at indexPath: IndexPath) {
-        let removingTracker = TrackerRecord(id: id, date: datePicker.date)
-        completedTrackers.remove(removingTracker)
+        let date = datePicker.date.makeShortDate()
+        do {
+            try trackerRecordStore.deleteTrackerRecord(with: id, at: date)
+        } catch {
+            assertionFailure("❌ Failure to delete a TrackerRecord from CoreData")
+        }
+        updateCompletedTrackers()
         trackersCollectionView.reloadItems(at: [indexPath])
     }
 }

@@ -106,6 +106,14 @@ final class TrackerStore: NSObject {
         saveContext()
     }
     
+    func fetchTracker(with id: UUID) throws -> TrackerCoreData? {
+        let fetchRequest = fetchedResultsController.fetchRequest
+        fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerCoreData.trackerID), id.uuidString)
+        let trackerCoreData = try context.fetch(fetchRequest)
+        let tracker = trackerCoreData.first
+        return tracker
+    }
+    
     // MARK: - Private Methods
     private func saveContext() {
         if context.hasChanges {

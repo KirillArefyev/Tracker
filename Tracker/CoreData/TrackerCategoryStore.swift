@@ -12,7 +12,7 @@ final class TrackerCategoryStore: NSObject {
     // MARK: - Public Properties
     var categories: [TrackerCategory] {
         guard
-            let objects = fetchedResultsController.fetchedObjects,
+            let objects = self.fetchedResultsController.fetchedObjects,
             let categories = try? objects.map({ try self.readTrackerCategory(from: $0) })
         else { return [] }
         return categories
@@ -106,7 +106,7 @@ final class TrackerCategoryStore: NSObject {
     
     private func fetchCategory(with name: String) throws -> TrackerCategoryCoreData? {
         let fetchRequest = fetchedResultsController.fetchRequest
-        fetchRequest.predicate = NSPredicate(format: "%K == %@", argumentArray: ["name", name])
+        fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerCategoryCoreData.name), name)
         let categoriesCoreData = try context.fetch(fetchRequest)
         let category = categoriesCoreData.first
         return category
