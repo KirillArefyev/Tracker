@@ -33,6 +33,7 @@
 		ED8773A82BCC3BF60019D8A9 /* WeekDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8773A72BCC3BF60019D8A9 /* WeekDay.swift */; };
 		ED8773CA2BCDAE310019D8A9 /* TrackerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8773C92BCDAE310019D8A9 /* TrackerCell.swift */; };
 		ED8773CC2BCDB7AD0019D8A9 /* HeaderTrackersCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8773CB2BCDB7AD0019D8A9 /* HeaderTrackersCollectionView.swift */; };
+		ED9A622F2C6544EC009BDA2A /* PersistentContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED9A622E2C6544EC009BDA2A /* PersistentContainer.swift */; };
 		EDB1C6A22BF2530E004C03FE /* EmojiAndColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB1C6A12BF2530E004C03FE /* EmojiAndColorCell.swift */; };
 		EDF78BF52BD1A6830037721F /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDF78BF42BD1A6830037721F /* ScheduleViewController.swift */; };
 /* End PBXBuildFile section */
@@ -66,6 +67,7 @@
 		ED8773A72BCC3BF60019D8A9 /* WeekDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDay.swift; sourceTree = "<group>"; };
 		ED8773C92BCDAE310019D8A9 /* TrackerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCell.swift; sourceTree = "<group>"; };
 		ED8773CB2BCDB7AD0019D8A9 /* HeaderTrackersCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderTrackersCollectionView.swift; sourceTree = "<group>"; };
+		ED9A622E2C6544EC009BDA2A /* PersistentContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentContainer.swift; sourceTree = "<group>"; };
 		EDB1C6A12BF2530E004C03FE /* EmojiAndColorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiAndColorCell.swift; sourceTree = "<group>"; };
 		EDF78BF42BD1A6830037721F /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -105,6 +107,7 @@
 			isa = PBXGroup;
 			children = (
 				ED4B3FFA2C0DF81700B8C261 /* TrackerModel.xcdatamodeld */,
+				ED9A622E2C6544EC009BDA2A /* PersistentContainer.swift */,
 				ED7881E12C3E61C40075EC9A /* StoreErrors.swift */,
 				ED7881E32C3E62150075EC9A /* StoreUpdate.swift */,
 				ED72CE102C19D32700A52C98 /* TrackerStore.swift */,
@@ -269,6 +272,7 @@
 				ED72CE152C19D45000A52C98 /* TrackerRecordStore.swift in Sources */,
 				ED4B3FF82BFFB24100B8C261 /* HelperData.swift in Sources */,
 				ED72CE132C19D40B00A52C98 /* TrackerCategoryStore.swift in Sources */,
+				ED9A622F2C6544EC009BDA2A /* PersistentContainer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -501,8 +505,7 @@
 				ED4B3FFB2C0DF81700B8C261 /* TrackerModel.xcdatamodel */,
 			);
 			currentVersion = ED4B3FFB2C0DF81700B8C261 /* TrackerModel.xcdatamodel */;
-			name = TrackerModel.xcdatamodeld;
-			path = "/Users/kirill/Yandex.Disk.localized/Я.Практикум/iOS-разработчик/Projects/Tracker/Tracker/CoreData/TrackerModel.xcdatamodeld";
+			path = TrackerModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

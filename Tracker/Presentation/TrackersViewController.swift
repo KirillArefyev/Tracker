@@ -198,11 +198,11 @@ final class TrackersViewController: UIViewController {
 // MARK: - CollectionViewDataSource
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return visibleCategories.count
+        visibleCategories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return visibleCategories[section].trackers.count
+        visibleCategories[section].trackers.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -249,15 +249,15 @@ extension TrackersViewController: UICollectionViewDataSource {
 // MARK: - CollectionViewDelegate
 extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: (collectionView.bounds.width - 16 * 2 - 9) / 2, height: 148 )
+        CGSize(width: (collectionView.bounds.width - 16 * 2 - 9) / 2, height: 148 )
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        0
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        0
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
@@ -270,7 +270,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 12, left: 16, bottom: 16, right: 16)
+        UIEdgeInsets(top: 12, left: 16, bottom: 16, right: 16)
     }
 }
 
@@ -278,12 +278,11 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 extension TrackersViewController: SelectingTrackerViewControllerDelegate {
     func appendTrackerToTrackerCategory(_ trackerCategory: TrackerCategory) {
         dismiss(animated: true)
-        if let tracker = trackerCategory.trackers.first {
-            do {
-                try trackerCategoryStore.createCategory(with: tracker, and: trackerCategory.name)
-            } catch {
-                assertionFailure("❌ Failure to create a TrackerCategory at CoreData")
-            }
+        guard let tracker = trackerCategory.trackers.first else { return }
+        do {
+            try trackerCategoryStore.createCategory(with: tracker, and: trackerCategory.name)
+        } catch {
+            assertionFailure("❌ Failure to create a TrackerCategory at CoreData")
         }
         datePickerDateChanged()
     }

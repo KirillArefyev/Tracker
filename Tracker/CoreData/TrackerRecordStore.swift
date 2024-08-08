@@ -44,8 +44,8 @@ final class TrackerRecordStore: NSObject {
     
     // MARK: - Inits
     convenience override init() {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let context = appDelegate.persistentContainer.viewContext
+        let container = PersistentContainer.shared
+        let context = container.persistentContainer.viewContext
         self.init(context: context)
     }
     
@@ -82,13 +82,12 @@ final class TrackerRecordStore: NSObject {
     
     // MARK: - Private Methods
     private func saveContext() {
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-            }
+        guard context.hasChanges else { return }
+        do {
+            try context.save()
+        } catch {
+            let nserror = error as NSError
+            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
         }
     }
 }

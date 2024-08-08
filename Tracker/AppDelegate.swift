@@ -5,7 +5,6 @@
 //  Created by Кирилл Арефьев on 06.04.2024.
 //
 
-import CoreData
 import UIKit
 
 @main
@@ -23,15 +22,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         return true
     }
-    
-    // MARK: - CoreData
-    lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "TrackerModel")
-        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
-            if let error = error as NSError? {
-                fatalError("Unresolved error \(error), \(error.userInfo)")
-            }
-        })
-        return container
-    }()
 }

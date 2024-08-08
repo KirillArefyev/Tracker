@@ -247,18 +247,15 @@ final class CreatingTrackerViewController: UIViewController {
     }
     
     @objc private func didTapCreateButton() {
-        dismiss(animated: true) { [weak self] in
-            guard let self = self else { return }
-            let trackerCategory = self.createCategory(with: self.newTracker)
-            self.delegate?.appendTrackerToTrackerCategory(trackerCategory)
-        }
+        let trackerCategory = self.createCategory(with: self.newTracker)
+        self.delegate?.appendTrackerToTrackerCategory(trackerCategory)
     }
 }
 
 // MARK: - TableViewDataSource
 extension CreatingTrackerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return typeTracker.numberOfRows
+        typeTracker.numberOfRows
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -300,7 +297,7 @@ extension CreatingTrackerViewController: UITableViewDataSource {
 // MARK: - TableViewDelegate
 extension CreatingTrackerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 75
+        75
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -320,7 +317,7 @@ extension CreatingTrackerViewController: UITableViewDelegate {
 // MARK: - CollectionViewDataSource
 extension CreatingTrackerViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return HelperData.sectionTitles.count
+        HelperData.sectionTitles.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -366,11 +363,11 @@ extension CreatingTrackerViewController: UICollectionViewDataSource {
 // MARK: - CollectionViewDelegate
 extension CreatingTrackerViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 52, height: 52)
+        CGSize(width: 52, height: 52)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        0
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -471,7 +468,7 @@ extension CreatingTrackerViewController: UITextFieldDelegate {
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        return true
+        true
     }
 }
 

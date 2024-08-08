@@ -21,9 +21,6 @@ final class TrackerStore: NSObject {
     // MARK: - Private Properties
     private let context: NSManagedObjectContext
     private var insertedIndexes: IndexSet?
-    private var deletedIndexes: IndexSet?
-    private var updatedIndexes: IndexSet?
-    private var movedIndexes: Set<StoreUpdate.Move>?
     
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCoreData> = {
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
@@ -44,8 +41,8 @@ final class TrackerStore: NSObject {
     
     // MARK: - Inits
     convenience override init() {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let context = appDelegate.persistentContainer.viewContext
+        let container = PersistentContainer.shared
+        let context = container.persistentContainer.viewContext
         self.init(context: context)
     }
     
@@ -116,13 +113,12 @@ final class TrackerStore: NSObject {
     
     // MARK: - Private Methods
     private func saveContext() {
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-            }
+        guard context.hasChanges else { return }
+        do {
+            try context.save()
+        } catch {
+            let nserror = error as NSError
+            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
         }
     }
 }
@@ -136,22 +132,9 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
                     newIndexPath: IndexPath?
     ) {
         switch type {
-        case .delete:
-            if let indexPath = indexPath {
-                deletedIndexes?.insert(indexPath.item)
-            }
         case .insert:
             if let indexPath = newIndexPath {
                 insertedIndexes?.insert(indexPath.item)
-            }
-        case .move:
-            if let oldIndexPath = indexPath,
-               let newIndexPath = newIndexPath {
-                movedIndexes?.insert(.init(oldIndex: oldIndexPath.item, newIndex: newIndexPath.item))
-            }
-        case .update:
-            if let indexPath = indexPath {
-                updatedIndexes?.insert(indexPath.item)
             }
         default:
             break
