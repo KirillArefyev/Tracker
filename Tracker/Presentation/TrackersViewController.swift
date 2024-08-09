@@ -13,6 +13,8 @@ final class TrackersViewController: UIViewController {
     private var completedTrackers: Set<TrackerRecord> = []
     private var currentDate = Date()
     private var visibleCategories: [TrackerCategory] = []
+    private let trackerCategoryStore = TrackerCategoryStore()
+    private let trackerRecordStore = TrackerRecordStore()
     
     private lazy var noTrackersImage: UIImageView = {
         let imageView = UIImageView()
@@ -115,8 +117,6 @@ final class TrackersViewController: UIViewController {
         setupNavBar()
         addSubviews()
         applyConstraints()
-        categories = CategoriesMock.shared.categories /* моки для проверки фильтра
-                                                       для проверки добавления трекера закомментить строку */
         datePickerDateChanged()
     }
     
@@ -157,6 +157,7 @@ final class TrackersViewController: UIViewController {
     }
     
     private func checkVisibleCategories() {
+        categories = trackerCategoryStore.categories
         var newCategories = categories.map { checkTrackerAtDayOfWeek($0) }
         newCategories.removeAll { $0.trackers.isEmpty }
         noTrackersStub.isHidden = !newCategories.isEmpty
@@ -167,9 +168,13 @@ final class TrackersViewController: UIViewController {
     private func checkTrackerAtDayOfWeek(_ trackerCategory: TrackerCategory) -> TrackerCategory {
         let calendar = Calendar.current
         let dayOfWeek = calendar.component(.weekday, from: currentDate)
-        let trackers = trackerCategory.trackers.filter { $0.schedule.contains { $0.rawValue == dayOfWeek}}
+        let trackers = trackerCategory.trackers.filter { $0.schedule.contains { $0.rawValue == dayOfWeek } }
         let newCategory = TrackerCategory(name: trackerCategory.name, trackers: trackers)
         return newCategory
+    }
+    
+    private func updateCompletedTrackers() {
+        completedTrackers = trackerRecordStore.records
     }
     
     @objc private func didTapToAddNewTracker() {
@@ -186,17 +191,18 @@ final class TrackersViewController: UIViewController {
         
         currentDate = datePicker.date
         checkVisibleCategories()
+        updateCompletedTrackers()
     }
 }
 
 // MARK: - CollectionViewDataSource
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return visibleCategories.count
+        visibleCategories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return visibleCategories[section].trackers.count
+        visibleCategories[section].trackers.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -224,7 +230,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         }
         
         let categoryName = visibleCategories[indexPath.section].name
-        view.setTitleCategory(categoryName)
+        view.setSectionTitle(categoryName)
         return view
     }
     
@@ -243,15 +249,15 @@ extension TrackersViewController: UICollectionViewDataSource {
 // MARK: - CollectionViewDelegate
 extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: (collectionView.bounds.width - 16 * 2 - 9) / 2, height: 148 )
+        CGSize(width: (collectionView.bounds.width - 16 * 2 - 9) / 2, height: 148 )
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        0
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        0
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
@@ -264,7 +270,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 12, left: 16, bottom: 16, right: 16)
+        UIEdgeInsets(top: 12, left: 16, bottom: 16, right: 16)
     }
 }
 
@@ -272,19 +278,11 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 extension TrackersViewController: SelectingTrackerViewControllerDelegate {
     func appendTrackerToTrackerCategory(_ trackerCategory: TrackerCategory) {
         dismiss(animated: true)
-        var newCategories = categories
-        if !newCategories.contains(where: { $0.name == trackerCategory.name }) {
-            newCategories.append(trackerCategory)
-            categories = newCategories
-        } else {
-            guard let categoryIndex = newCategories.firstIndex(where: { $0.name == trackerCategory.name }) else {
-                assertionFailure("❌ no index for category")
-                return
-            }
-            let oldTrackers = categories[categoryIndex].trackers
-            let newTrackers = oldTrackers + trackerCategory.trackers
-            let newCategory = TrackerCategory(name: trackerCategory.name, trackers: newTrackers)
-            categories[categoryIndex] = newCategory
+        guard let tracker = trackerCategory.trackers.first else { return }
+        do {
+            try trackerCategoryStore.createCategory(with: tracker, and: trackerCategory.name)
+        } catch {
+            assertionFailure("❌ Failure to create a TrackerCategory at CoreData")
         }
         datePickerDateChanged()
     }
@@ -294,15 +292,25 @@ extension TrackersViewController: SelectingTrackerViewControllerDelegate {
 extension TrackersViewController: TrackerCellDelegate {
     func completeTracker(id: UUID, at indexPath: IndexPath) {
         if currentDate <= Date() {
-            let trackerRecord = TrackerRecord(id: id, date: currentDate)
-            completedTrackers.insert(trackerRecord)
+            let date = currentDate.makeShortDate()
+            do {
+                try trackerRecordStore.createTrackerRecord(with: id, at: date)
+            } catch {
+                assertionFailure("❌ Failure to create a TrackerRecord at CoreData")
+            }
+            updateCompletedTrackers()
             trackersCollectionView.reloadItems(at: [indexPath])
         }
     }
     
     func uncompliteTracker(id: UUID, at indexPath: IndexPath) {
-        let removingTracker = TrackerRecord(id: id, date: datePicker.date)
-        completedTrackers.remove(removingTracker)
+        let date = datePicker.date.makeShortDate()
+        do {
+            try trackerRecordStore.deleteTrackerRecord(with: id, at: date)
+        } catch {
+            assertionFailure("❌ Failure to delete a TrackerRecord from CoreData")
+        }
+        updateCompletedTrackers()
         trackersCollectionView.reloadItems(at: [indexPath])
     }
 }

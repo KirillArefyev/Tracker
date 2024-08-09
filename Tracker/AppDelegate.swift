@@ -16,6 +16,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow()
         window?.rootViewController = TabBarViewController()
         window?.makeKeyAndVisible()
+        
+        UIColorValueTransformer.register()
+        WeekDaysValueTransformer.register()
+        
         return true
     }
 }

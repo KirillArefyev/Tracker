@@ -99,7 +99,7 @@ final class ScheduleViewController: UIViewController {
     @objc private func didTapReadyButton() {
         dismiss(animated: true) { [weak self] in
             guard let self = self else { return }
-            let sortedDays = self.selectedDays.sorted { $0.rawValue < $1.rawValue }
+            let sortedDays = self.selectedDays.sorted { $0.shortName.0 < $1.shortName.0 }
             self.delegate?.createSchedule(sortedDays)
         }
     }
@@ -108,7 +108,7 @@ final class ScheduleViewController: UIViewController {
 // MARK: - TableViewDataSource
 extension ScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return weekDays.count
+        weekDays.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -149,6 +149,6 @@ extension ScheduleViewController: UITableViewDataSource {
 // MARK: - TableViewDelegate
 extension ScheduleViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 75
+        75
     }
 }

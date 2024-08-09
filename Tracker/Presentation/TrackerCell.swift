@@ -164,8 +164,10 @@ final class TrackerCell: UICollectionViewCell {
     }
     
     @objc private func didTapTrackerPlusButton() {
-        guard let trackerId = trackerId,
-              let indexPath = indexPath else {
+        guard 
+            let trackerId = trackerId,
+            let indexPath = indexPath
+        else {
             assertionFailure("❌ no trackerId or indexPath")
             return
         }
